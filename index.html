@@ -699,6 +699,9 @@ textarea.finput{resize:vertical;min-height:64px;line-height:1.5}
         <button class="sbtn red" onclick="openResetModal()">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 109-9 9.75 9.75 0 00-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>Reset Total de XP
         </button>
+        <button class="sbtn" onclick="checkStorageUsage()" style="margin-top:8px;border-top:1px solid var(--border);padding-top:10px">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>Ver uso de espaço
+        </button>
       </div>
     </aside>
 
@@ -952,9 +955,45 @@ const MONTHS=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Ago
 const XP_STAR={1:10,2:20,3:35,4:50,5:100};
 
 // ══ PERSIST ══
-function save(){localStorage.setItem('lc_e',JSON.stringify(emps));localStorage.setItem('lc_l',JSON.stringify(logs));localStorage.setItem('lc_h',JSON.stringify(hall));localStorage.setItem('lc_s',JSON.stringify(svStats))}
+// Fotos ficam separadas do resto para não estourar o limite do localStorage
+function save(){
+  try{
+    // Salva fotos separadamente por funcionário
+    emps.forEach(e=>{
+      if(e.photo){
+        try{localStorage.setItem('lc_ph_'+e.id,e.photo)}catch(err){
+          // Se foto estourar quota, avisa mas não trava
+          console.warn('Foto muito grande para salvar localmente:',e.name);
+        }
+      } else {
+        localStorage.removeItem('lc_ph_'+e.id);
+      }
+    });
+    // Salva dados sem fotos (muito menor)
+    const empsNoPhoto=emps.map(e=>({...e,photo:undefined}));
+    localStorage.setItem('lc_e',JSON.stringify(empsNoPhoto));
+    localStorage.setItem('lc_l',JSON.stringify(logs));
+    localStorage.setItem('lc_h',JSON.stringify(hall));
+    localStorage.setItem('lc_s',JSON.stringify(svStats));
+  }catch(err){
+    // Tenta limpar logs antigos e salvar de novo
+    try{
+      const trimmedLogs={};
+      Object.keys(logs).forEach(k=>{trimmedLogs[k]=(logs[k]||[]).slice(-20)});
+      const empsNoPhoto=emps.map(e=>({...e,photo:undefined}));
+      localStorage.setItem('lc_e',JSON.stringify(empsNoPhoto));
+      localStorage.setItem('lc_l',JSON.stringify(trimmedLogs));
+      localStorage.setItem('lc_h',JSON.stringify(hall));
+      localStorage.setItem('lc_s',JSON.stringify(svStats));
+      toast('⚠ Espaço limitado — fotos antigas podem não ser salvas. Exporte os dados!','inf');
+    }catch(e2){toast('❌ Erro ao salvar: exportar dados agora!','err')}
+  }
+}
 function load(){
-  try{const e=localStorage.getItem('lc_e');if(e)emps=JSON.parse(e)}catch(e){}
+  try{const e=localStorage.getItem('lc_e');if(e){emps=JSON.parse(e);
+    // Recarrega fotos separadas
+    emps.forEach(e=>{const ph=localStorage.getItem('lc_ph_'+e.id);if(ph)e.photo=ph;});
+  }}catch(e){}
   try{const l=localStorage.getItem('lc_l');if(l)logs=JSON.parse(l)}catch(e){}
   try{const h=localStorage.getItem('lc_h');if(h)hall=JSON.parse(h)}catch(e){}
   try{const s=localStorage.getItem('lc_s');if(s)svStats=JSON.parse(s)}catch(e){}
@@ -1144,11 +1183,29 @@ function delEmp(id){
 }
 function handlePhoto(ev){
   const f=ev.target.files[0];if(!f)return;
-  const r=new FileReader();r.onload=e=>{
-    window._pd=e.target.result;
-    const p=document.getElementById('photo-prev');p.src=e.target.result;p.style.display='block';
-    document.getElementById('photo-icon').style.display='none';document.getElementById('photo-txt').style.display='none';
-  };r.readAsDataURL(f);
+  const reader=new FileReader();
+  reader.onload=function(e){
+    const img=new Image();
+    img.onload=function(){
+      const MAX=300;
+      let w=img.width,h=img.height;
+      if(w>h){if(w>MAX){h=Math.round(h*MAX/w);w=MAX}}
+      else{if(h>MAX){w=Math.round(w*MAX/h);h=MAX}}
+      const canvas=document.createElement('canvas');
+      canvas.width=w;canvas.height=h;
+      canvas.getContext('2d').drawImage(img,0,0,w,h);
+      const compressed=canvas.toDataURL('image/jpeg',0.72);
+      window._pd=compressed;
+      const p=document.getElementById('photo-prev');
+      p.src=compressed;p.style.display='block';
+      document.getElementById('photo-icon').style.display='none';
+      document.getElementById('photo-txt').style.display='none';
+      const kb=Math.round(compressed.length*0.75/1024);
+      toast('Foto carregada ('+kb+'KB)','ok');
+    };
+    img.src=e.target.result;
+  };
+  reader.readAsDataURL(f);
 }
 function clearPhoto(){window._pd=null;const p=document.getElementById('photo-prev');p.src='';p.style.display='none';document.getElementById('photo-icon').style.display='';document.getElementById('photo-txt').style.display=''}
 function updateDatalistsSectors(){
@@ -1305,19 +1362,35 @@ function doReset(){
 
 // ══ EXPORT / IMPORT ══
 function exportData(){
-  const data={emps,logs,hall,svStats,v:2,exported:new Date().toISOString()};
-  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  // Garante que fotos estão incluídas no export (vêm do localStorage por foto)
+  const empsWithPhotos=emps.map(e=>({...e}));
+  empsWithPhotos.forEach(e=>{if(!e.photo){const ph=localStorage.getItem('lc_ph_'+e.id);if(ph)e.photo=ph;}});
+  const data={emps:empsWithPhotos,logs,hall,svStats,v:3,exported:new Date().toISOString()};
+  const blob=new Blob([JSON.stringify(data)],{type:'application/json'});
   const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`lider-${new Date().toLocaleDateString('pt-BR').replace(/\//g,'-')}.json`;a.click();
-  toast('Dados exportados!','ok');
+  const kb=Math.round(blob.size/1024);
+  toast('Dados exportados! ('+kb+'KB)','ok');
 }
 function handleImport(ev){
   const f=ev.target.files[0];if(!f)return;
-  const r=new FileReader();r.onload=e=>{
-    try{const d=JSON.parse(e.target.result);
-      if(d.emps)emps=d.emps;if(d.logs)logs=d.logs;if(d.hall)hall=d.hall;if(d.svStats)svStats=d.svStats;
-      save();renderCards();renderHall();toast(`${emps.length} funcionários importados!`,'ok');
-    }catch{toast('Arquivo inválido','err')}
+  const r=new FileReader();r.onload=function(e){
+    try{
+      const d=JSON.parse(e.target.result);
+      if(d.emps)emps=d.emps;
+      if(d.logs)logs=d.logs;
+      if(d.hall)hall=d.hall;
+      if(d.svStats)svStats=d.svStats;
+      save();renderCards();renderHall();
+      toast(emps.length+' funcionários importados!','ok');
+    }catch(err){toast('Arquivo inválido','err')}
   };r.readAsText(f);ev.target.value='';
+}
+function checkStorageUsage(){
+  let total=0;
+  for(const k in localStorage){if(localStorage.hasOwnProperty(k))total+=localStorage[k].length;}
+  const kb=Math.round(total*2/1024);
+  const pct=Math.round(kb/5120*100);
+  toast('Armazenamento: '+kb+'KB / ~5MB ('+pct+'%)','inf');
 }
 
 // ══ TV ══
