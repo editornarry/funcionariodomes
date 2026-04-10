@@ -5,1409 +5,1467 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Funcionário do Mês — Líder Corretora</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Exo+2:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Exo+2:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <style>
-/* ===== RESET & BASE ===== */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg-deep:#080c18;
-  --bg-card:#0f1628;
-  --bg-panel:#141c35;
-  --bg-input:#0a0f20;
-  --gold:#f5c842;
-  --gold-light:#ffe680;
-  --purple:#9b5cf6;
-  --purple-light:#c084fc;
-  --epic-border:#7c3aed;
-  --legendary-gold:#f59e0b;
-  --blue-accent:#3b82f6;
-  --teal:#06b6d4;
-  --green:#22c55e;
-  --red:#ef4444;
-  --text-primary:#e8eaf6;
-  --text-secondary:#8892b0;
-  --text-muted:#4a5568;
-  --border-subtle:rgba(255,255,255,0.07);
-  --common-bg:linear-gradient(135deg,#1a2035 0%,#141c35 100%);
-  --rare-bg:linear-gradient(135deg,#1a2535 0%,#0f1e35 100%);
-  --epic-bg:linear-gradient(135deg,#1e1535 0%,#120e28 100%);
-  --legendary-bg:linear-gradient(135deg,#2a1a00 0%,#1a1000 100%);
-  --font-display:'Rajdhani',sans-serif;
-  --font-body:'Exo 2',sans-serif;
+  --bg:#07090f;
+  --bg1:#0c1120;
+  --bg2:#101828;
+  --bg3:#141e32;
+  --surface:rgba(255,255,255,0.04);
+  --border:rgba(255,255,255,0.08);
+  --border2:rgba(255,255,255,0.14);
+  --gold:#f5c842;--gold2:#ffe066;--gold3:#c8981a;
+  --purple:#9b5cf6;--purple2:#c084fc;--purple3:#6d28d9;
+  --blue:#3b82f6;--blue2:#60a5fa;
+  --teal:#14b8a6;--teal2:#5eead4;
+  --green:#22c55e;--green2:#86efac;
+  --red:#ef4444;--red2:#fca5a5;
+  --orange:#f97316;--orange2:#fdba74;
+  --text:#e8edf8;--text2:#8892b0;--text3:#4a5568;
+  --font-d:'Rajdhani',sans-serif;
+  --font-b:'Exo 2',sans-serif;
+  --r8:8px;--r12:12px;--r16:16px;
 }
-html,body{height:100%;overflow:hidden}
-body{
-  font-family:var(--font-body);
-  background:var(--bg-deep);
-  color:var(--text-primary);
-  font-size:14px;
-}
-
-/* ===== SCROLLBAR ===== */
-::-webkit-scrollbar{width:4px}
-::-webkit-scrollbar-track{background:transparent}
+html,body{height:100%;overflow:hidden;font-family:var(--font-b);color:var(--text);font-size:14px;background:var(--bg)}
+::-webkit-scrollbar{width:3px;height:3px}
 ::-webkit-scrollbar-thumb{background:var(--purple);border-radius:2px}
+::-webkit-scrollbar-track{background:transparent}
 
-/* ===== BACKGROUND STARS ===== */
-#bg-canvas{position:fixed;inset:0;pointer-events:none;z-index:0}
+/* ── STARS BG ── */
+#stars-bg{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.star-particle{position:absolute;border-radius:50%;background:#fff;animation:twinkle var(--dur,3s) ease-in-out infinite var(--delay,0s)}
+@keyframes twinkle{0%,100%{opacity:0.1;transform:scale(1)}50%{opacity:var(--op,0.7);transform:scale(1.3)}}
 
-/* ===== VIEWS ===== */
-.view{display:none;position:relative;z-index:1;height:100vh;overflow-y:auto}
-.view.active{display:flex;flex-direction:column}
+/* ── PAGES ── */
+.page{display:none;position:relative;z-index:1;height:100vh;flex-direction:column;overflow:hidden}
+.page.on{display:flex}
 
-/* ===== TOP NAV ===== */
-.topnav{
-  display:flex;align-items:center;gap:12px;
-  padding:14px 24px;
-  background:rgba(8,12,24,0.95);
-  border-bottom:1px solid var(--border-subtle);
+/* ══════════════════════════════════════
+   ADMIN PAGE
+══════════════════════════════════════ */
+/* NAV */
+.nav{
+  display:flex;align-items:center;gap:10px;
+  padding:0 24px;height:60px;flex-shrink:0;
+  background:rgba(7,9,15,0.9);
+  border-bottom:1px solid var(--border);
   backdrop-filter:blur(20px);
-  position:sticky;top:0;z-index:100;
-  flex-shrink:0;
+  position:relative;z-index:50;
 }
-.topnav-logo{
-  font-family:var(--font-display);
-  font-size:22px;font-weight:700;
-  background:linear-gradient(90deg,var(--gold),var(--purple-light));
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-  letter-spacing:1px;
+.nav-brand{display:flex;flex-direction:column;gap:1px;margin-right:8px}
+.nav-brand-name{font-family:var(--font-d);font-size:20px;font-weight:700;letter-spacing:2px;
+  background:linear-gradient(90deg,var(--gold),#fff 50%,var(--purple2));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1}
+.nav-brand-sub{font-size:9px;color:var(--text3);letter-spacing:3px;text-transform:uppercase}
+.nav-div{width:1px;height:28px;background:var(--border);margin:0 4px}
+.nav-spacer{flex:1}
+.nbtn{
+  display:flex;align-items:center;gap:6px;
+  padding:7px 14px;border-radius:var(--r8);
+  border:1px solid var(--border);background:var(--surface);
+  color:var(--text2);cursor:pointer;font-family:var(--font-b);font-size:12px;font-weight:500;
+  transition:all .18s;white-space:nowrap;
 }
-.topnav-sub{font-size:11px;color:var(--text-muted);font-weight:500;letter-spacing:2px;text-transform:uppercase;margin-top:2px}
-.topnav-spacer{flex:1}
-.nav-btn{
-  display:flex;align-items:center;gap:7px;
-  padding:8px 16px;border-radius:8px;border:1px solid var(--border-subtle);
-  background:rgba(255,255,255,0.04);
-  color:var(--text-secondary);cursor:pointer;
-  font-family:var(--font-body);font-size:13px;font-weight:500;
-  transition:all 0.2s;
-}
-.nav-btn:hover{background:rgba(155,92,246,0.15);border-color:var(--purple);color:var(--text-primary)}
-.nav-btn.active{background:rgba(155,92,246,0.2);border-color:var(--purple);color:var(--purple-light)}
-.nav-btn svg{width:15px;height:15px;flex-shrink:0}
-
-/* ===== MONTH BADGE ===== */
-.month-badge{
-  padding:6px 14px;border-radius:20px;
-  background:rgba(245,200,66,0.12);border:1px solid rgba(245,200,66,0.3);
-  color:var(--gold);font-size:12px;font-weight:600;
-  letter-spacing:1px;font-family:var(--font-display);
+.nbtn:hover,.nbtn.on{background:rgba(155,92,246,.15);border-color:var(--purple);color:var(--purple2)}
+.nbtn svg{width:14px;height:14px;flex-shrink:0}
+.month-pill{
+  padding:5px 14px;border-radius:20px;
+  background:rgba(245,200,66,.1);border:1px solid rgba(245,200,66,.3);
+  color:var(--gold);font-size:11px;font-weight:700;letter-spacing:1.5px;
+  font-family:var(--font-d);
 }
 
-/* ===== ADMIN PANEL ===== */
-.admin-content{flex:1;display:flex;gap:0;overflow:hidden}
+/* LAYOUT */
+.admin-body{flex:1;display:flex;overflow:hidden}
+
+/* SIDEBAR */
 .sidebar{
-  width:260px;flex-shrink:0;
-  background:rgba(15,22,40,0.8);
-  border-right:1px solid var(--border-subtle);
-  padding:20px 16px;overflow-y:auto;
+  width:242px;flex-shrink:0;
+  background:rgba(12,17,32,.95);
+  border-right:1px solid var(--border);
+  display:flex;flex-direction:column;overflow-y:auto;
 }
-.sidebar h3{
-  font-family:var(--font-display);font-size:11px;font-weight:600;
-  color:var(--text-muted);letter-spacing:2px;text-transform:uppercase;
-  margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border-subtle);
+.sb-section{padding:16px 14px;border-bottom:1px solid var(--border)}
+.sb-title{font-size:10px;color:var(--text3);letter-spacing:2px;text-transform:uppercase;font-weight:600;margin-bottom:10px}
+.sb-stat{
+  background:rgba(255,255,255,.03);border:1px solid var(--border);
+  border-radius:var(--r8);padding:12px;margin-bottom:8px;
 }
-.stat-block{
-  background:rgba(255,255,255,0.03);border:1px solid var(--border-subtle);
-  border-radius:10px;padding:14px;margin-bottom:10px;
+.sb-stat-val{font-family:var(--font-d);font-size:30px;font-weight:700;line-height:1}
+.sb-stat-lbl{font-size:10px;color:var(--text3);margin-top:3px}
+.sb-stat-val.gold{color:var(--gold)}
+.sb-stat-val.purple{color:var(--purple2)}
+.sb-stat-val.teal{color:var(--teal2)}
+.sbtn{
+  width:100%;padding:9px 12px;border-radius:var(--r8);border:1px solid var(--border);
+  background:var(--surface);color:var(--text2);cursor:pointer;
+  font-family:var(--font-b);font-size:12px;font-weight:500;
+  text-align:left;display:flex;align-items:center;gap:8px;transition:all .18s;margin-bottom:5px;
 }
-.stat-block .val{font-family:var(--font-display);font-size:28px;font-weight:700;color:var(--purple-light)}
-.stat-block .lbl{font-size:11px;color:var(--text-muted);margin-top:2px}
-.sidebar-btn{
-  width:100%;padding:10px 14px;border-radius:8px;border:1px solid var(--border-subtle);
-  background:rgba(255,255,255,0.03);color:var(--text-secondary);
-  cursor:pointer;font-family:var(--font-body);font-size:13px;font-weight:500;
-  text-align:left;display:flex;align-items:center;gap:8px;
-  transition:all 0.2s;margin-bottom:6px;
-}
-.sidebar-btn:hover{background:rgba(255,255,255,0.07);color:var(--text-primary);border-color:rgba(255,255,255,0.15)}
-.sidebar-btn.danger:hover{background:rgba(239,68,68,0.12);border-color:var(--red);color:var(--red)}
-.sidebar-btn.success:hover{background:rgba(34,197,94,0.12);border-color:var(--green);color:var(--green)}
-.sidebar-btn svg{width:14px;height:14px;flex-shrink:0}
+.sbtn svg{width:14px;height:14px;flex-shrink:0;opacity:.7}
+.sbtn:hover{background:rgba(255,255,255,.07);color:var(--text);border-color:var(--border2)}
+.sbtn.red:hover{background:rgba(239,68,68,.1);border-color:var(--red);color:var(--red2)}
+.sbtn.gold:hover{background:rgba(245,200,66,.1);border-color:var(--gold3);color:var(--gold)}
+.sbtn.teal:hover{background:rgba(20,184,166,.1);border-color:var(--teal);color:var(--teal2)}
 
-/* ===== MAIN AREA ===== */
-.main-area{flex:1;padding:24px;overflow-y:auto}
-.main-header{display:flex;align-items:center;gap:12px;margin-bottom:24px;flex-wrap:wrap}
-.main-header h2{font-family:var(--font-display);font-size:26px;font-weight:700;letter-spacing:1px}
-.main-header-spacer{flex:1}
-.search-box{
-  padding:9px 14px;border-radius:8px;
-  border:1px solid var(--border-subtle);
-  background:var(--bg-input);color:var(--text-primary);
-  font-family:var(--font-body);font-size:13px;width:220px;
-  transition:border-color 0.2s;outline:none;
-}
-.search-box:focus{border-color:var(--purple)}
-.filter-select{
-  padding:9px 12px;border-radius:8px;
-  border:1px solid var(--border-subtle);
-  background:var(--bg-input);color:var(--text-secondary);
-  font-family:var(--font-body);font-size:13px;
-  outline:none;cursor:pointer;
-}
-.btn-primary{
-  padding:9px 18px;border-radius:8px;
-  border:1px solid var(--purple);
-  background:rgba(155,92,246,0.2);color:var(--purple-light);
-  cursor:pointer;font-family:var(--font-body);font-size:13px;font-weight:600;
-  display:flex;align-items:center;gap:7px;transition:all 0.2s;
-}
-.btn-primary:hover{background:rgba(155,92,246,0.35);transform:translateY(-1px)}
-.btn-primary svg{width:15px;height:15px}
+/* Rarity legend */
+.rarity-row{display:flex;justify-content:space-between;align-items:center;font-size:11px;padding:3px 0}
+.r-chip{padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700;border:1px solid;font-family:var(--font-d);letter-spacing:.5px}
+.r-comum{color:var(--text3);border-color:var(--text3);background:rgba(255,255,255,.03)}
+.r-raro{color:var(--gold);border-color:rgba(245,200,66,.4);background:rgba(245,200,66,.07)}
+.r-epico{color:var(--purple2);border-color:rgba(155,92,246,.4);background:rgba(155,92,246,.1)}
+.r-lendario{color:var(--orange2);border-color:rgba(249,115,22,.4);background:rgba(249,115,22,.08)}
 
-/* ===== CARDS GRID ===== */
+/* MAIN */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+
+/* TABS BY SECTOR */
+.sector-tabs{
+  display:flex;align-items:center;gap:4px;
+  padding:10px 20px 0;border-bottom:1px solid var(--border);
+  background:rgba(12,17,32,.5);overflow-x:auto;flex-shrink:0;
+}
+.sector-tabs::-webkit-scrollbar{height:0}
+.stab{
+  padding:8px 16px;border-radius:8px 8px 0 0;
+  border:1px solid transparent;border-bottom:none;
+  font-family:var(--font-d);font-size:13px;font-weight:600;
+  cursor:pointer;color:var(--text2);transition:all .18s;white-space:nowrap;
+  position:relative;bottom:-1px;
+}
+.stab:hover{color:var(--text);background:rgba(255,255,255,.04)}
+.stab.on{color:var(--purple2);background:var(--bg2);border-color:var(--border);border-bottom-color:var(--bg2)}
+.stab .stab-count{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:18px;height:18px;border-radius:50%;font-size:9px;font-weight:700;
+  background:rgba(155,92,246,.2);color:var(--purple2);margin-left:6px;
+}
+
+/* TOOLBAR */
+.toolbar{
+  display:flex;align-items:center;gap:10px;
+  padding:12px 20px;flex-shrink:0;flex-wrap:wrap;
+}
+.search-inp{
+  padding:8px 14px;border-radius:var(--r8);
+  border:1px solid var(--border);background:rgba(255,255,255,.04);
+  color:var(--text);font-family:var(--font-b);font-size:13px;
+  outline:none;width:200px;transition:border-color .18s;
+}
+.search-inp:focus{border-color:var(--purple)}
+.search-inp::placeholder{color:var(--text3)}
+.sel{
+  padding:8px 12px;border-radius:var(--r8);
+  border:1px solid var(--border);background:rgba(255,255,255,.04);
+  color:var(--text2);font-family:var(--font-b);font-size:12px;outline:none;cursor:pointer;
+}
+.tb-spacer{flex:1}
+.btn-p{
+  display:flex;align-items:center;gap:6px;
+  padding:8px 16px;border-radius:var(--r8);
+  border:1px solid var(--purple);background:rgba(155,92,246,.18);
+  color:var(--purple2);cursor:pointer;font-family:var(--font-b);font-size:12px;font-weight:600;
+  transition:all .18s;
+}
+.btn-p:hover{background:rgba(155,92,246,.32);transform:translateY(-1px)}
+.btn-p svg{width:14px;height:14px}
+
+/* CARDS AREA */
+.cards-area{flex:1;overflow-y:auto;padding:20px}
+
+/* SECTOR GROUP */
+.sector-group{margin-bottom:32px}
+.sector-group-header{
+  display:flex;align-items:center;gap:12px;margin-bottom:14px;
+  padding-bottom:10px;border-bottom:1px solid var(--border);
+}
+.sector-group-name{font-family:var(--font-d);font-size:18px;font-weight:700;letter-spacing:1px}
+.sector-group-count{font-size:11px;color:var(--text3)}
+.sector-leader-badge{
+  padding:3px 10px;border-radius:20px;font-size:10px;font-weight:700;
+  background:rgba(245,200,66,.12);border:1px solid rgba(245,200,66,.3);color:var(--gold);
+  font-family:var(--font-d);letter-spacing:.5px;margin-left:auto;
+}
+
 .cards-grid{
   display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(180px,1fr));
-  gap:20px;
+  grid-template-columns:repeat(auto-fill,minmax(168px,1fr));
+  gap:16px;
 }
 
-/* ===== EMPLOYEE CARD ===== */
-.emp-card{
-  position:relative;border-radius:14px;overflow:hidden;
-  cursor:pointer;transition:transform 0.2s,box-shadow 0.2s;
-  padding:3px;
-}
-.emp-card:hover{transform:translateY(-4px) scale(1.02)}
+/* ══ EMPLOYEE CARD ══ */
+.ecard{position:relative;border-radius:14px;cursor:pointer;transition:transform .2s,box-shadow .2s;padding:2.5px}
+.ecard:hover{transform:translateY(-5px) scale(1.025)}
+.ecard:nth-child(1){animation:cardIn .4s ease both}
+.ecard:nth-child(2){animation:cardIn .4s ease .05s both}
+.ecard:nth-child(3){animation:cardIn .4s ease .1s both}
+.ecard:nth-child(4){animation:cardIn .4s ease .15s both}
+.ecard:nth-child(5){animation:cardIn .4s ease .2s both}
+.ecard:nth-child(6){animation:cardIn .4s ease .25s both}
+@keyframes cardIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
 
-/* Raridade - bordas */
-.emp-card.comum .card-border{background:linear-gradient(135deg,#2a3352,#1a2035)}
-.emp-card.raro .card-border{
-  background:linear-gradient(135deg,var(--gold),#c8981a,var(--gold-light),#c8981a);
-  animation:shimmer-rare 3s linear infinite;
-  background-size:200% 200%;
-}
-.emp-card.epico .card-border{
-  background:linear-gradient(135deg,var(--purple),var(--epic-border),#4c1d95,var(--purple-light),var(--purple));
-  animation:shimmer-epic 2s linear infinite;
-  background-size:200% 200%;
-}
-.emp-card.lendario .card-border{
-  background:linear-gradient(135deg,var(--legendary-gold),#dc2626,var(--legendary-gold),#f97316,var(--legendary-gold));
-  animation:shimmer-legendary 1.5s linear infinite;
-  background-size:300% 300%;
-}
-.emp-card.lendario{box-shadow:0 0 20px rgba(245,158,11,0.3),0 0 40px rgba(245,158,11,0.1)}
-.emp-card.epico{box-shadow:0 0 15px rgba(124,58,237,0.4)}
+/* border gradient by rarity */
+.ecard.comum{background:linear-gradient(135deg,#2a3352,#1e2840)}
+.ecard.raro{background:linear-gradient(135deg,var(--gold3),#8a6200,var(--gold2),#8a6200);background-size:200%;animation:bspin 4s linear infinite}
+.ecard.epico{background:linear-gradient(135deg,var(--purple3),var(--purple),#4c1d95,var(--purple2),var(--purple3));background-size:200%;animation:bspin 2.5s linear infinite}
+.ecard.lendario{background:linear-gradient(135deg,var(--orange),var(--red),var(--gold),var(--orange2),var(--orange));background-size:300%;animation:bspin 1.8s linear infinite}
+@keyframes bspin{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+.ecard.epico{box-shadow:0 0 18px rgba(124,58,237,.35)}
+.ecard.lendario{box-shadow:0 0 24px rgba(249,115,22,.35),0 0 48px rgba(249,115,22,.12)}
 
-@keyframes shimmer-rare{0%{background-position:0% 50%}100%{background-position:200% 50%}}
-@keyframes shimmer-epic{0%{background-position:0% 0%}50%{background-position:100% 100%}100%{background-position:0% 0%}}
-@keyframes shimmer-legendary{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+.card-wrap{border-radius:12px;overflow:hidden;background:var(--bg2);display:flex;flex-direction:column;position:relative}
 
-.card-border{border-radius:14px;padding:2px}
-.card-inner{
-  border-radius:12px;overflow:hidden;
-  position:relative;
-}
-.emp-card.comum .card-inner{background:var(--common-bg)}
-.emp-card.raro .card-inner{background:var(--rare-bg)}
-.emp-card.epico .card-inner{background:var(--epic-bg)}
-.emp-card.lendario .card-inner{background:var(--legendary-bg)}
-
-/* Level badge */
-.card-level{
-  position:absolute;top:8px;left:8px;z-index:10;
+/* badges top */
+.card-top-badges{position:absolute;top:8px;left:8px;right:8px;z-index:10;display:flex;justify-content:space-between;align-items:flex-start;pointer-events:none}
+.badge-level{
   width:26px;height:26px;border-radius:50%;
   display:flex;align-items:center;justify-content:center;
-  font-family:var(--font-display);font-size:13px;font-weight:700;
-  border:2px solid;
+  font-family:var(--font-d);font-size:13px;font-weight:700;border:2px solid;
 }
-.comum .card-level{background:#1e2d4a;border-color:#3b5070;color:#7aa0c8}
-.raro .card-level{background:#1a1f00;border-color:var(--gold);color:var(--gold)}
-.epico .card-level{background:#1a0a2e;border-color:var(--purple);color:var(--purple-light)}
-.lendario .card-level{background:#2a1500;border-color:var(--legendary-gold);color:var(--legendary-gold);animation:glow-level 1.5s ease-in-out infinite alternate}
-@keyframes glow-level{from{box-shadow:0 0 5px rgba(245,158,11,0.5)}to{box-shadow:0 0 12px rgba(245,158,11,0.9),0 0 20px rgba(245,158,11,0.4)}}
+.comum .badge-level{background:#1c2a40;border-color:#3a5070;color:#7aa0c8}
+.raro .badge-level{background:#1a1500;border-color:var(--gold3);color:var(--gold)}
+.epico .badge-level{background:#1a0a30;border-color:var(--purple);color:var(--purple2)}
+.lendario .badge-level{background:#200e00;border-color:var(--orange);color:var(--orange2);animation:glowlvl 1.5s ease-in-out infinite alternate}
+@keyframes glowlvl{from{box-shadow:0 0 4px rgba(249,115,22,.5)}to{box-shadow:0 0 14px rgba(249,115,22,.9)}}
 
-/* Rank badge */
-.card-rank{
-  position:absolute;top:8px;right:8px;z-index:10;
-  width:22px;height:22px;border-radius:4px;
-  display:flex;align-items:center;justify-content:center;
-  font-family:var(--font-display);font-size:11px;font-weight:700;
-  background:rgba(0,0,0,0.6);color:var(--text-muted);
+.badge-rank{
+  padding:2px 7px;border-radius:5px;
+  font-family:var(--font-d);font-size:12px;font-weight:700;
+  background:rgba(0,0,0,.65);color:var(--text3);
 }
-.card-rank.rank-1{background:var(--gold);color:#000}
-.card-rank.rank-2{background:#adb5c0;color:#000}
-.card-rank.rank-3{background:#cd7f32;color:#fff}
+.badge-rank.r1{background:var(--gold);color:#000}
+.badge-rank.r2{background:#adb5c0;color:#000}
+.badge-rank.r3{background:#cd7f32;color:#fff}
 
-/* Photo */
-.card-photo-wrap{
-  width:100%;aspect-ratio:1;position:relative;overflow:hidden;
-}
-.card-photo{width:100%;height:100%;object-fit:cover;display:block}
-.card-photo-placeholder{
+/* photo */
+.card-photo-box{width:100%;aspect-ratio:1;position:relative;overflow:hidden;flex-shrink:0}
+.card-photo-box img{width:100%;height:100%;object-fit:cover;display:block}
+.card-photo-box .no-photo{
   width:100%;height:100%;display:flex;align-items:center;justify-content:center;
-  font-family:var(--font-display);font-size:52px;font-weight:700;
-  background:linear-gradient(135deg,rgba(155,92,246,0.15),rgba(59,130,246,0.1));
-  color:rgba(255,255,255,0.15);
-  letter-spacing:-2px;
+  font-family:var(--font-d);font-size:52px;font-weight:700;
+  background:linear-gradient(135deg,rgba(155,92,246,.1),rgba(59,130,246,.08));
+  color:rgba(255,255,255,.12);
 }
-.card-photo-wrap::after{
-  content:'';position:absolute;bottom:0;left:0;right:0;height:60%;
-  background:linear-gradient(to top,rgba(0,0,0,0.85),transparent);
-  pointer-events:none;
-}
+.card-photo-box::after{content:'';position:absolute;bottom:0;left:0;right:0;height:65%;background:linear-gradient(to top,rgba(8,9,20,.95),transparent);pointer-events:none}
+/* legendary shimmer */
+.lendario .card-photo-box::before{content:'';position:absolute;inset:0;z-index:5;pointer-events:none;background:radial-gradient(ellipse at 25% 25%,rgba(249,115,22,.1),transparent 55%),radial-gradient(ellipse at 75% 75%,rgba(239,68,68,.07),transparent 55%);animation:legshim 3s ease-in-out infinite alternate}
+@keyframes legshim{from{opacity:.5}to{opacity:1}}
 
-/* Legendary particles */
-.lendario .card-photo-wrap::before{
-  content:'';position:absolute;inset:0;z-index:5;pointer-events:none;
-  background:radial-gradient(ellipse at 30% 30%,rgba(245,158,11,0.08) 0%,transparent 50%),
-             radial-gradient(ellipse at 70% 70%,rgba(220,38,38,0.06) 0%,transparent 50%);
-  animation:legendary-glow 3s ease-in-out infinite alternate;
-}
-@keyframes legendary-glow{from{opacity:0.5}to{opacity:1}}
+/* info */
+.card-info{padding:10px 10px 11px;margin-top:-2px;position:relative;z-index:2}
+.card-name{font-family:var(--font-d);font-size:15px;font-weight:700;letter-spacing:.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.1}
+.card-meta{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card-sector-chip{display:inline-block;padding:2px 7px;border-radius:4px;font-size:9px;font-weight:700;background:rgba(59,130,246,.12);color:var(--blue2);border:1px solid rgba(59,130,246,.2);margin-top:4px;font-family:var(--font-d);letter-spacing:.5px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 
-/* Card info */
-.card-info{padding:10px 10px 12px}
-.card-name{font-family:var(--font-display);font-size:16px;font-weight:700;letter-spacing:0.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.card-sector{font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-
-/* XP bar */
-.card-xp-wrap{margin-top:8px}
-.card-xp-label{display:flex;justify-content:space-between;font-size:10px;margin-bottom:4px;font-family:var(--font-display)}
-.card-xp-label .xp-val{color:var(--gold);font-weight:700}
-.card-xp-label .xp-lbl{color:var(--text-muted)}
-.card-xp-bar{height:5px;background:rgba(255,255,255,0.08);border-radius:3px;overflow:hidden}
-.card-xp-fill{height:100%;border-radius:3px;transition:width 0.6s cubic-bezier(.34,1.56,.64,1)}
-.comum .card-xp-fill{background:linear-gradient(90deg,#4a7fa5,#7aa0c8)}
-.raro .card-xp-fill{background:linear-gradient(90deg,#b8860b,var(--gold))}
-.epico .card-xp-fill{background:linear-gradient(90deg,var(--epic-border),var(--purple-light))}
-.lendario .card-xp-fill{background:linear-gradient(90deg,#dc2626,var(--legendary-gold),#f97316);animation:legendary-bar 2s linear infinite;background-size:200%}
-@keyframes legendary-bar{from{background-position:0%}to{background-position:200%}}
+/* XP */
+.card-xp-row{display:flex;justify-content:space-between;align-items:baseline;margin-top:8px;font-family:var(--font-d)}
+.card-xp-num{font-size:18px;font-weight:700;color:var(--gold);line-height:1}
+.card-xp-lbl{font-size:9px;color:var(--text3)}
+.card-xp-bar{height:4px;background:rgba(255,255,255,.07);border-radius:2px;overflow:hidden;margin-top:5px}
+.card-xp-fill{height:100%;border-radius:2px;transition:width .7s cubic-bezier(.34,1.56,.64,1)}
+.comum .card-xp-fill{background:linear-gradient(90deg,#3a5f82,#7aa0c8)}
+.raro .card-xp-fill{background:linear-gradient(90deg,var(--gold3),var(--gold2))}
+.epico .card-xp-fill{background:linear-gradient(90deg,var(--purple3),var(--purple2))}
+.lendario .card-xp-fill{background:linear-gradient(90deg,var(--red),var(--gold),var(--orange));background-size:200%;animation:xpbar 2s linear infinite}
+@keyframes xpbar{from{background-position:0%}to{background-position:200%}}
 
 /* Rarity label */
-.card-rarity{
-  text-align:center;font-family:var(--font-display);font-size:9px;font-weight:700;
-  letter-spacing:2px;text-transform:uppercase;margin-top:6px;
-  padding:3px 0;border-radius:3px;
-}
-.comum .card-rarity{color:var(--text-muted)}
-.raro .card-rarity{color:var(--gold)}
-.epico .card-rarity{color:var(--purple-light)}
-.lendario .card-rarity{color:var(--legendary-gold);animation:text-pulse 1.5s ease-in-out infinite alternate}
-@keyframes text-pulse{from{opacity:0.7}to{opacity:1;text-shadow:0 0 8px rgba(245,158,11,0.8)}}
+.card-rarity-lbl{text-align:center;font-family:var(--font-d);font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-top:5px;padding:2px 0;border-radius:2px}
+.comum .card-rarity-lbl{color:var(--text3)}
+.raro .card-rarity-lbl{color:var(--gold)}
+.epico .card-rarity-lbl{color:var(--purple2)}
+.lendario .card-rarity-lbl{color:var(--orange2);animation:txtpulse 1.5s ease-in-out infinite alternate}
+@keyframes txtpulse{from{opacity:.6}to{opacity:1;text-shadow:0 0 8px rgba(249,115,22,.8)}}
 
-/* Card actions (hover overlay) */
+/* Card hover actions */
 .card-actions{
   position:absolute;inset:0;z-index:20;
-  background:rgba(0,0,0,0.75);backdrop-filter:blur(4px);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;
-  opacity:0;transition:opacity 0.2s;border-radius:12px;
+  background:rgba(0,0,0,.78);backdrop-filter:blur(6px);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;
+  opacity:0;transition:opacity .2s;border-radius:12px;
 }
-.emp-card:hover .card-actions{opacity:1}
-.card-action-btn{
-  padding:7px 18px;border-radius:6px;border:1px solid;
-  font-family:var(--font-body);font-size:12px;font-weight:600;cursor:pointer;
-  min-width:120px;text-align:center;transition:all 0.15s;
+.ecard:hover .card-actions{opacity:1}
+.cta{
+  padding:7px 0;border-radius:7px;border:1px solid;
+  font-family:var(--font-b);font-size:11px;font-weight:600;cursor:pointer;
+  width:130px;text-align:center;transition:all .15s;
 }
-.card-action-btn.xp{background:rgba(155,92,246,0.2);border-color:var(--purple);color:var(--purple-light)}
-.card-action-btn.edit{background:rgba(59,130,246,0.15);border-color:var(--blue-accent);color:#93c5fd}
-.card-action-btn.delete{background:rgba(239,68,68,0.12);border-color:var(--red);color:#fca5a5}
-.card-action-btn:hover{transform:scale(1.05)}
+.cta.xp{background:rgba(155,92,246,.2);border-color:var(--purple);color:var(--purple2)}
+.cta.edit{background:rgba(59,130,246,.15);border-color:var(--blue);color:var(--blue2)}
+.cta.prof{background:rgba(20,184,166,.12);border-color:var(--teal);color:var(--teal2)}
+.cta.del{background:rgba(239,68,68,.12);border-color:var(--red);color:var(--red2)}
+.cta:hover{transform:scale(1.05)}
 
-/* ===== MODALS ===== */
-.modal-overlay{
-  position:fixed;inset:0;z-index:1000;
-  background:rgba(0,0,0,0.8);backdrop-filter:blur(8px);
-  display:flex;align-items:center;justify-content:center;
-  padding:20px;
-}
-.modal-overlay.hidden{display:none}
+/* EMPTY */
+.empty{text-align:center;padding:60px 20px;grid-column:1/-1;color:var(--text3)}
+.empty svg{opacity:.2;margin-bottom:14px}
+
+/* ══════════════════════════════════════
+   MODALS
+══════════════════════════════════════ */
+.overlay{position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.82);backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;padding:20px}
+.overlay.h{display:none}
 .modal{
-  background:var(--bg-panel);border:1px solid rgba(255,255,255,0.1);
-  border-radius:16px;padding:28px;width:100%;max-width:480px;
+  background:var(--bg2);border:1px solid var(--border2);
+  border-radius:var(--r16);padding:28px;width:100%;
   position:relative;max-height:90vh;overflow-y:auto;
 }
-.modal-big{max-width:600px}
-.modal h2{
-  font-family:var(--font-display);font-size:22px;font-weight:700;
-  margin-bottom:20px;letter-spacing:1px;
-}
-.modal-close{
-  position:absolute;top:16px;right:16px;
+.modal-sm{max-width:420px}
+.modal-md{max-width:560px}
+.modal-lg{max-width:720px}
+.modal-xl{max-width:900px}
+.modal h2{font-family:var(--font-d);font-size:22px;font-weight:700;margin-bottom:20px;letter-spacing:1px}
+.mclose{
+  position:absolute;top:14px;right:14px;
   width:28px;height:28px;border-radius:50%;
-  border:1px solid var(--border-subtle);background:rgba(255,255,255,0.05);
-  color:var(--text-muted);cursor:pointer;font-size:16px;
-  display:flex;align-items:center;justify-content:center;
-  transition:all 0.2s;
+  border:1px solid var(--border);background:var(--surface);
+  color:var(--text3);cursor:pointer;font-size:15px;
+  display:flex;align-items:center;justify-content:center;transition:all .2s;
 }
-.modal-close:hover{background:rgba(239,68,68,0.15);border-color:var(--red);color:var(--red)}
+.mclose:hover{background:rgba(239,68,68,.15);border-color:var(--red);color:var(--red2)}
 
-/* Form fields */
-.form-group{margin-bottom:16px}
-.form-group label{display:block;font-size:12px;color:var(--text-muted);margin-bottom:6px;font-weight:600;letter-spacing:1px;text-transform:uppercase}
-.form-input{
-  width:100%;padding:10px 14px;border-radius:8px;
-  border:1px solid var(--border-subtle);
-  background:var(--bg-input);color:var(--text-primary);
-  font-family:var(--font-body);font-size:14px;outline:none;
-  transition:border-color 0.2s;
+/* FORM */
+.fg{margin-bottom:14px}
+.fg label{display:block;font-size:11px;color:var(--text3);margin-bottom:5px;font-weight:600;letter-spacing:1px;text-transform:uppercase}
+.finput{
+  width:100%;padding:9px 13px;border-radius:var(--r8);
+  border:1px solid var(--border);background:rgba(255,255,255,.04);
+  color:var(--text);font-family:var(--font-b);font-size:13px;outline:none;transition:border-color .18s;
 }
-.form-input:focus{border-color:var(--purple)}
-.form-input::placeholder{color:var(--text-muted)}
-.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.form-actions{display:flex;gap:10px;margin-top:24px;justify-content:flex-end}
-.btn-cancel{
-  padding:9px 18px;border-radius:8px;
-  border:1px solid var(--border-subtle);background:transparent;
-  color:var(--text-secondary);cursor:pointer;font-family:var(--font-body);font-size:13px;
-}
-.btn-cancel:hover{background:rgba(255,255,255,0.05)}
-.btn-save{
-  padding:9px 22px;border-radius:8px;
-  border:1px solid var(--purple);
-  background:rgba(155,92,246,0.25);color:var(--purple-light);
-  cursor:pointer;font-family:var(--font-body);font-size:13px;font-weight:700;
-  transition:all 0.2s;
-}
-.btn-save:hover{background:rgba(155,92,246,0.4);transform:translateY(-1px)}
+.finput:focus{border-color:var(--purple)}
+.finput::placeholder{color:var(--text3)}
+.finput.small{padding:7px 11px;font-size:12px}
+textarea.finput{resize:vertical;min-height:64px;line-height:1.5}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.frow3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.fact{display:flex;gap:10px;margin-top:20px;justify-content:flex-end}
+.btn-cancel{padding:8px 16px;border-radius:var(--r8);border:1px solid var(--border);background:transparent;color:var(--text2);cursor:pointer;font-family:var(--font-b);font-size:12px}
+.btn-cancel:hover{background:var(--surface)}
+.btn-save{padding:8px 20px;border-radius:var(--r8);border:1px solid var(--purple);background:rgba(155,92,246,.22);color:var(--purple2);cursor:pointer;font-family:var(--font-b);font-size:12px;font-weight:700;transition:all .18s}
+.btn-save:hover{background:rgba(155,92,246,.38);transform:translateY(-1px)}
+.btn-danger{padding:8px 20px;border-radius:var(--r8);border:1px solid var(--red);background:rgba(239,68,68,.15);color:var(--red2);cursor:pointer;font-family:var(--font-b);font-size:12px;font-weight:700}
 
 /* Photo upload */
-.photo-upload-area{
-  width:100%;aspect-ratio:1;max-width:160px;margin:0 auto 16px;
-  border-radius:12px;border:2px dashed rgba(155,92,246,0.4);
-  background:rgba(155,92,246,0.05);cursor:pointer;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  gap:8px;overflow:hidden;transition:border-color 0.2s;position:relative;
+.photo-area{
+  width:140px;height:140px;border-radius:var(--r12);
+  border:2px dashed rgba(155,92,246,.4);background:rgba(155,92,246,.05);
+  cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:6px;overflow:hidden;transition:border-color .2s;position:relative;margin:0 auto 14px;flex-shrink:0;
 }
-.photo-upload-area:hover{border-color:var(--purple)}
-.photo-upload-area img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:10px}
-.photo-upload-text{font-size:11px;color:var(--text-muted);text-align:center;padding:0 10px;line-height:1.5}
+.photo-area:hover{border-color:var(--purple)}
+.photo-area img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:10px}
+.photo-area-txt{font-size:10px;color:var(--text3);text-align:center;padding:0 8px;line-height:1.5}
+
+/* Section divider in modal */
+.form-section{font-family:var(--font-d);font-size:10px;font-weight:600;color:var(--text3);letter-spacing:2px;text-transform:uppercase;margin:18px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--border)}
 
 /* XP modal */
-.xp-display{
-  text-align:center;padding:20px;
-  background:rgba(155,92,246,0.08);border:1px solid rgba(155,92,246,0.2);
-  border-radius:12px;margin-bottom:16px;
+.xp-hero{
+  text-align:center;padding:16px;
+  background:rgba(155,92,246,.07);border:1px solid rgba(155,92,246,.18);
+  border-radius:var(--r12);margin-bottom:14px;
 }
-.xp-current{font-family:var(--font-display);font-size:48px;font-weight:700;color:var(--purple-light)}
-.xp-lbl{font-size:12px;color:var(--text-muted);margin-top:4px}
-.xp-quick-btns{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:12px 0}
-.xp-quick{
-  padding:8px 4px;border-radius:7px;border:1px solid var(--border-subtle);
-  background:rgba(255,255,255,0.03);color:var(--text-secondary);
-  cursor:pointer;font-family:var(--font-display);font-size:13px;font-weight:700;
-  transition:all 0.15s;text-align:center;
-}
-.xp-quick.pos{color:var(--green);border-color:rgba(34,197,94,0.2)}
-.xp-quick.pos:hover{background:rgba(34,197,94,0.12);border-color:var(--green)}
-.xp-quick.neg{color:var(--red);border-color:rgba(239,68,68,0.2)}
-.xp-quick.neg:hover{background:rgba(239,68,68,0.12);border-color:var(--red)}
+.xp-hero-num{font-family:var(--font-d);font-size:52px;font-weight:700;color:var(--purple2);line-height:1}
+.xp-hero-lbl{font-size:11px;color:var(--text3);margin-top:2px}
+.xp-btns{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:10px 0}
+.xqb{padding:7px 4px;border-radius:6px;border:1px solid var(--border);background:var(--surface);cursor:pointer;font-family:var(--font-d);font-size:13px;font-weight:700;transition:all .15s;text-align:center}
+.xqb.p{color:var(--green2);border-color:rgba(34,197,94,.2)}
+.xqb.p:hover{background:rgba(34,197,94,.1);border-color:var(--green)}
+.xqb.n{color:var(--red2);border-color:rgba(239,68,68,.2)}
+.xqb.n:hover{background:rgba(239,68,68,.1);border-color:var(--red)}
+.log-list{max-height:160px;overflow-y:auto;border:1px solid var(--border);border-radius:var(--r8);padding:3px}
+.log-item{padding:6px 10px;border-radius:6px;font-size:11px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border)}
+.log-item:last-child{border-bottom:none}
+.log-item.p .log-xp{color:var(--green2)}
+.log-item.n .log-xp{color:var(--red2)}
+.log-date{color:var(--text3);font-size:10px}
+.log-xp{font-family:var(--font-d);font-weight:700}
 
-/* Log */
-.log-entries{max-height:180px;overflow-y:auto;border:1px solid var(--border-subtle);border-radius:8px;padding:4px}
-.log-entry{
-  padding:7px 10px;border-radius:6px;font-size:12px;
-  display:flex;justify-content:space-between;align-items:center;
-  border-bottom:1px solid var(--border-subtle);
+/* ══ PROFILE VIEW ══ */
+.profile-grid{display:grid;grid-template-columns:200px 1fr;gap:24px}
+.profile-photo-side{display:flex;flex-direction:column;align-items:center;gap:12px}
+.profile-photo-frame{
+  width:180px;height:180px;border-radius:var(--r12);overflow:hidden;
+  border:3px solid var(--border2);position:relative;
 }
-.log-entry:last-child{border-bottom:none}
-.log-entry.pos .log-xp{color:var(--green)}
-.log-entry.neg .log-xp{color:var(--red)}
-.log-date{color:var(--text-muted);font-size:11px}
-.log-xp{font-family:var(--font-display);font-weight:700}
+.profile-photo-frame img{width:100%;height:100%;object-fit:cover}
+.profile-photo-frame .no-photo{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-family:var(--font-d);font-size:60px;font-weight:700;color:rgba(255,255,255,.12);background:rgba(155,92,246,.07)}
+.profile-name{font-family:var(--font-d);font-size:22px;font-weight:700;text-align:center}
+.profile-role{font-size:12px;color:var(--text2);text-align:center}
+.profile-sector-badge{padding:4px 12px;border-radius:20px;background:rgba(59,130,246,.12);border:1px solid rgba(59,130,246,.25);color:var(--blue2);font-size:11px;font-weight:700;font-family:var(--font-d)}
+.profile-xp-block{text-align:center;padding:10px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);width:100%}
+.profile-xp-num{font-family:var(--font-d);font-size:36px;font-weight:700;color:var(--gold)}
+.profile-xp-lbl{font-size:10px;color:var(--text3)}
+.rarity-badge-big{padding:5px 16px;border-radius:20px;font-family:var(--font-d);font-size:13px;font-weight:700;letter-spacing:1px}
+.rarity-badge-big.comum{background:rgba(255,255,255,.05);border:1px solid var(--text3);color:var(--text3)}
+.rarity-badge-big.raro{background:rgba(245,200,66,.1);border:1px solid var(--gold3);color:var(--gold)}
+.rarity-badge-big.epico{background:rgba(155,92,246,.12);border:1px solid var(--purple);color:var(--purple2)}
+.rarity-badge-big.lendario{background:rgba(249,115,22,.1);border:1px solid var(--orange);color:var(--orange2)}
 
-/* ===== SURVEY VIEW ===== */
-#view-survey{background:var(--bg-deep)}
-.survey-wrap{
-  flex:1;display:flex;align-items:center;justify-content:center;
-  padding:40px 20px;
-}
-.survey-card{
-  background:var(--bg-panel);border:1px solid rgba(155,92,246,0.2);
-  border-radius:20px;padding:40px;max-width:560px;width:100%;
-}
-.survey-card h1{
-  font-family:var(--font-display);font-size:32px;font-weight:700;
-  text-align:center;margin-bottom:6px;
-  background:linear-gradient(90deg,var(--gold),var(--purple-light));
+.profile-info-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.pinfo-item{background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:var(--r8);padding:10px 12px}
+.pinfo-lbl{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:3px}
+.pinfo-val{font-size:13px;font-weight:500;color:var(--text)}
+.pinfo-val.empty{color:var(--text3);font-style:italic}
+
+.achievements-wrap{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+.ach-badge{padding:4px 10px;border-radius:20px;font-size:10px;font-weight:700;background:rgba(245,200,66,.1);border:1px solid rgba(245,200,66,.3);color:var(--gold);font-family:var(--font-d)}
+
+.profile-history{margin-top:16px}
+.hist-item{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:var(--r8);background:rgba(245,200,66,.06);border:1px solid rgba(245,200,66,.15);margin-bottom:6px}
+.hist-month{font-family:var(--font-d);font-size:13px;font-weight:700;color:var(--gold)}
+.hist-xp{font-family:var(--font-d);font-size:16px;font-weight:700;color:var(--text);margin-left:auto}
+.hist-trophy{font-size:18px}
+
+/* ══════════════════════════════════════
+   HALL DA FAMA PAGE
+══════════════════════════════════════ */
+#pg-hall .hall-content{flex:1;overflow-y:auto;padding:30px}
+.hall-title{
+  font-family:var(--font-d);font-size:36px;font-weight:700;text-align:center;letter-spacing:3px;
+  background:linear-gradient(90deg,var(--gold3),var(--gold2),#fff,var(--gold2),var(--gold3));
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  margin-bottom:6px;
 }
-.survey-card p{color:var(--text-muted);text-align:center;margin-bottom:28px;font-size:14px}
-.survey-step{display:none}
-.survey-step.active{display:block}
-.survey-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:12px;max-height:360px;overflow-y:auto;padding:4px}
-.survey-emp-btn{
-  padding:14px 10px;border-radius:10px;border:1px solid var(--border-subtle);
-  background:rgba(255,255,255,0.03);cursor:pointer;
-  text-align:center;transition:all 0.2s;
+.hall-sub{text-align:center;color:var(--text3);font-size:13px;margin-bottom:32px;letter-spacing:2px;text-transform:uppercase}
+.hall-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:20px}
+.hall-card{
+  background:var(--bg2);border:1px solid rgba(245,200,66,.2);
+  border-radius:var(--r16);overflow:hidden;text-align:center;
+  transition:transform .2s;
 }
-.survey-emp-btn:hover{border-color:var(--purple);background:rgba(155,92,246,0.1)}
-.survey-emp-btn.selected{border-color:var(--purple);background:rgba(155,92,246,0.2)}
-.survey-emp-photo{
-  width:60px;height:60px;border-radius:50%;margin:0 auto 8px;overflow:hidden;
-  background:rgba(155,92,246,0.15);display:flex;align-items:center;justify-content:center;
-  font-family:var(--font-display);font-size:22px;font-weight:700;color:rgba(255,255,255,0.2);
+.hall-card:hover{transform:translateY(-4px)}
+.hall-card-photo{width:100%;aspect-ratio:1;overflow:hidden;position:relative}
+.hall-card-photo img{width:100%;height:100%;object-fit:cover}
+.hall-card-photo .no-photo{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-family:var(--font-d);font-size:48px;color:rgba(255,255,255,.1);background:rgba(245,200,66,.05)}
+.hall-card-photo::after{content:'';position:absolute;bottom:0;left:0;right:0;height:50%;background:linear-gradient(to top,rgba(8,9,20,.95),transparent)}
+.hall-card-info{padding:14px}
+.hall-card-trophy{font-size:28px;margin-bottom:4px}
+.hall-card-name{font-family:var(--font-d);font-size:18px;font-weight:700}
+.hall-card-month{font-size:12px;color:var(--gold);font-weight:600;margin-top:2px}
+.hall-card-xp{font-family:var(--font-d);font-size:22px;font-weight:700;color:var(--text2);margin-top:6px}
+.hall-card-wins{font-size:10px;color:var(--text3);margin-top:2px}
+.hall-empty{text-align:center;padding:60px;color:var(--text3);grid-column:1/-1}
+.hall-empty-icon{font-size:48px;margin-bottom:12px;opacity:.3}
+.hall-reg-btn{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  padding:10px 20px;border-radius:var(--r8);
+  border:1px solid var(--gold3);background:rgba(245,200,66,.12);color:var(--gold);
+  cursor:pointer;font-family:var(--font-d);font-size:15px;font-weight:700;
+  margin:0 auto 28px;transition:all .18s;
 }
-.survey-emp-photo img{width:100%;height:100%;object-fit:cover}
-.survey-emp-name{font-size:12px;font-weight:600;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.survey-emp-sector{font-size:10px;color:var(--text-muted)}
+.hall-reg-btn:hover{background:rgba(245,200,66,.22);transform:translateY(-1px)}
 
-/* Stars */
-.stars-wrap{display:flex;justify-content:center;gap:12px;margin:24px 0}
-.star{font-size:42px;cursor:pointer;transition:transform 0.1s;filter:grayscale(1) brightness(0.5)}
-.star.active{filter:none;transform:scale(1.1)}
-.star:hover{transform:scale(1.2)}
-.survey-selected-info{
-  display:flex;align-items:center;gap:12px;padding:14px;
-  background:rgba(155,92,246,0.08);border:1px solid rgba(155,92,246,0.2);
-  border-radius:10px;margin-bottom:20px;
-}
-.survey-selected-photo{width:48px;height:48px;border-radius:50%;overflow:hidden;background:rgba(155,92,246,0.15);display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:20px;color:rgba(255,255,255,0.2);flex-shrink:0}
-.survey-selected-photo img{width:100%;height:100%;object-fit:cover}
-.survey-selected-name{font-family:var(--font-display);font-size:18px;font-weight:700}
-.survey-selected-sector{font-size:12px;color:var(--text-muted)}
-.btn-survey{
-  width:100%;padding:13px;border-radius:10px;
-  border:1px solid var(--purple);
-  background:rgba(155,92,246,0.25);color:var(--purple-light);
-  cursor:pointer;font-family:var(--font-display);font-size:16px;font-weight:700;
-  letter-spacing:1px;transition:all 0.2s;margin-top:16px;
-}
-.btn-survey:hover{background:rgba(155,92,246,0.4);transform:translateY(-1px)}
-.btn-survey:disabled{opacity:0.4;cursor:not-allowed;transform:none}
-.survey-success{text-align:center;padding:20px}
-.survey-success .check{font-size:64px;margin-bottom:16px}
-.survey-success h2{font-family:var(--font-display);font-size:24px;margin-bottom:8px;color:var(--green)}
-.survey-success p{color:var(--text-muted)}
-
-/* ===== TV / DISPLAY MODE ===== */
-#view-tv{
-  background:#04080f;overflow:hidden;
-  position:fixed;inset:0;z-index:500;display:none;flex-direction:column;
-}
-#view-tv.active{display:flex}
-
-.tv-header{
+/* ══════════════════════════════════════
+   TV / DISPLAY PAGE
+══════════════════════════════════════ */
+#pg-tv{background:#04060e;overflow:hidden}
+#pg-tv .tv-hdr{
   display:flex;align-items:center;justify-content:space-between;
-  padding:16px 32px;
-  background:rgba(0,0,0,0.6);border-bottom:1px solid rgba(245,200,66,0.15);
-  flex-shrink:0;
+  padding:14px 32px;background:rgba(0,0,0,.7);border-bottom:1px solid rgba(245,200,66,.12);flex-shrink:0;
 }
-.tv-logo{
-  font-family:var(--font-display);font-size:28px;font-weight:700;letter-spacing:3px;
-  background:linear-gradient(90deg,var(--gold),#fff,var(--purple-light));
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+.tv-logo{font-family:var(--font-d);font-size:26px;font-weight:700;letter-spacing:3px;background:linear-gradient(90deg,var(--gold),#fff,var(--purple2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.tv-month-lbl{font-family:var(--font-d);font-size:14px;color:var(--gold);letter-spacing:2px}
+.tv-exit-btn{padding:6px 14px;border-radius:var(--r8);border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04);color:rgba(255,255,255,.4);cursor:pointer;font-size:11px;transition:all .18s}
+.tv-exit-btn:hover{border-color:var(--red);color:var(--red2);background:rgba(239,68,68,.1)}
+.tv-body{flex:1;display:flex;overflow:hidden}
+.tv-rank-area{flex:1;display:flex;align-items:center;justify-content:center;padding:20px 24px;overflow-y:auto}
+.tv-qr-panel{
+  width:220px;flex-shrink:0;background:rgba(0,0,0,.5);border-left:1px solid rgba(255,255,255,.07);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px 16px;gap:16px;
 }
-.tv-month{
-  font-family:var(--font-display);font-size:16px;font-weight:600;
-  color:var(--gold);letter-spacing:2px;text-transform:uppercase;
+.tv-qr-title{font-family:var(--font-d);font-size:12px;font-weight:700;letter-spacing:2px;color:var(--text2);text-align:center;text-transform:uppercase}
+.tv-qr-box{
+  width:160px;height:160px;background:#fff;border-radius:12px;
+  display:flex;align-items:center;justify-content:center;overflow:hidden;
 }
-.tv-exit{
-  padding:8px 16px;border-radius:8px;border:1px solid rgba(255,255,255,0.15);
-  background:rgba(255,255,255,0.05);color:rgba(255,255,255,0.5);
-  cursor:pointer;font-family:var(--font-body);font-size:12px;
-  transition:all 0.2s;
-}
-.tv-exit:hover{background:rgba(239,68,68,0.15);border-color:var(--red);color:var(--red)}
+.tv-qr-desc{font-size:11px;color:var(--text3);text-align:center;line-height:1.6}
+.tv-qr-stars{font-size:20px;letter-spacing:4px}
 
-.tv-content{flex:1;display:flex;align-items:center;justify-content:center;overflow:hidden;padding:20px 32px}
-
-/* TV Podium Mode */
-.tv-podium{display:flex;align-items:flex-end;justify-content:center;gap:24px;width:100%;max-width:900px}
-.podium-slot{display:flex;flex-direction:column;align-items:center;gap:16px}
-.podium-slot.first{order:2}
-.podium-slot.second{order:1}
-.podium-slot.third{order:3}
-
-.tv-card{position:relative;width:200px;flex-shrink:0}
-.tv-card.large{width:260px}
-
-.podium-base{
-  width:100%;border-radius:12px 12px 0 0;
-  display:flex;align-items:center;justify-content:center;
-  font-family:var(--font-display);font-size:36px;font-weight:700;
-}
-.podium-base.b1{height:100px;background:linear-gradient(180deg,rgba(245,200,66,0.3),rgba(245,200,66,0.1));border:1px solid rgba(245,200,66,0.4);color:var(--gold)}
-.podium-base.b2{height:72px;background:linear-gradient(180deg,rgba(173,181,192,0.2),rgba(173,181,192,0.05));border:1px solid rgba(173,181,192,0.3);color:#adb5c0}
-.podium-base.b3{height:54px;background:linear-gradient(180deg,rgba(205,127,50,0.2),rgba(205,127,50,0.05));border:1px solid rgba(205,127,50,0.3);color:#cd7f32}
-
-/* TV Ranking list mode */
-.tv-ranking{width:100%;max-width:800px}
-.tv-rank-row{
+/* TV ranking rows */
+.tv-ranking{width:100%;max-width:820px}
+.tv-row{
   display:flex;align-items:center;gap:16px;
-  padding:12px 20px;border-radius:10px;margin-bottom:8px;
-  background:rgba(255,255,255,0.03);border:1px solid var(--border-subtle);
-  animation:slideIn 0.4s ease both;
+  padding:10px 18px;border-radius:10px;margin-bottom:8px;
+  background:rgba(255,255,255,.03);border:1px solid var(--border);
+  animation:rowIn .45s ease both;
 }
-@keyframes slideIn{from{opacity:0;transform:translateX(-20px)}to{opacity:1;transform:translateX(0)}}
-.tv-rank-num{
-  font-family:var(--font-display);font-size:28px;font-weight:700;
-  min-width:44px;text-align:center;
-}
-.tv-rank-photo{width:52px;height:52px;border-radius:50%;overflow:hidden;flex-shrink:0;border:2px solid var(--border-subtle)}
+@keyframes rowIn{from{opacity:0;transform:translateX(-20px)}to{opacity:1;transform:translateX(0)}}
+.tv-rank-n{font-family:var(--font-d);font-size:30px;font-weight:700;min-width:48px;text-align:center}
+.tv-rank-photo{width:52px;height:52px;border-radius:50%;overflow:hidden;flex-shrink:0;border:2px solid var(--border2)}
 .tv-rank-photo img{width:100%;height:100%;object-fit:cover}
-.tv-rank-photo .initials{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:18px;font-weight:700;color:rgba(255,255,255,0.25);background:rgba(155,92,246,0.15)}
+.tv-rank-photo .ini{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-family:var(--font-d);font-size:18px;font-weight:700;color:rgba(255,255,255,.2);background:rgba(155,92,246,.12)}
 .tv-rank-info{flex:1}
-.tv-rank-name{font-family:var(--font-display);font-size:20px;font-weight:700}
-.tv-rank-sector{font-size:12px;color:var(--text-muted)}
-.tv-rank-xp{font-family:var(--font-display);font-size:26px;font-weight:700;color:var(--gold)}
-.tv-rank-xplab{font-size:11px;color:var(--text-muted);text-align:right}
-.tv-rank-bar-wrap{width:180px;flex-shrink:0}
-.tv-rank-bar{height:6px;background:rgba(255,255,255,0.08);border-radius:3px;overflow:hidden;margin-top:4px}
-.tv-rank-bar-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--purple),var(--purple-light))}
+.tv-rank-name{font-family:var(--font-d);font-size:20px;font-weight:700}
+.tv-rank-sector{font-size:11px;color:var(--text3)}
+.tv-rank-xp{font-family:var(--font-d);font-size:26px;font-weight:700;color:var(--gold);text-align:right}
+.tv-rank-xplbl{font-size:10px;color:var(--text3);text-align:right}
+.tv-bar-wrap{width:160px;flex-shrink:0}
+.tv-bar{height:5px;background:rgba(255,255,255,.07);border-radius:3px;overflow:hidden;margin-top:4px}
+.tv-bar-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--purple),var(--purple2))}
 
-/* Live XP toast */
-.xp-toast{
-  position:fixed;bottom:80px;right:32px;z-index:600;
-  padding:14px 20px;border-radius:12px;
-  background:rgba(15,22,40,0.95);border:1px solid var(--purple);
-  backdrop-filter:blur(12px);
-  animation:toastIn 0.4s ease,toastOut 0.4s ease 3.5s forwards;
-  pointer-events:none;
+/* TV Podium */
+.tv-podium{display:flex;align-items:flex-end;justify-content:center;gap:20px;width:100%;max-width:860px}
+.pdm-slot{display:flex;flex-direction:column;align-items:center;gap:12px}
+.pdm-slot.p1{order:2}.pdm-slot.p2{order:1}.pdm-slot.p3{order:3}
+.pdm-card{border-radius:14px;overflow:hidden;border:2px solid}
+.pdm-slot.p1 .pdm-card{width:240px;border-color:var(--gold)}
+.pdm-slot.p2 .pdm-card{width:190px;border-color:#adb5c0}
+.pdm-slot.p3 .pdm-card{width:175px;border-color:#cd7f32}
+.pdm-card-photo{width:100%;aspect-ratio:1;overflow:hidden;position:relative}
+.pdm-card-photo img{width:100%;height:100%;object-fit:cover}
+.pdm-card-photo .ini{width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:rgba(155,92,246,.1);font-family:var(--font-d);font-weight:700;color:rgba(255,255,255,.15)}
+.pdm-card-photo::after{content:'';position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.92) 0%,transparent 45%)}
+.pdm-card-info{position:absolute;bottom:0;left:0;right:0;padding:10px;z-index:2}
+.pdm-name{font-family:var(--font-d);font-weight:700}
+.pdm-xp{font-family:var(--font-d);color:var(--gold);font-weight:700}
+.pdm-slot.p1 .pdm-name{font-size:20px}.pdm-slot.p1 .pdm-xp{font-size:22px}
+.pdm-slot.p2 .pdm-name{font-size:16px}.pdm-slot.p2 .pdm-xp{font-size:17px}
+.pdm-slot.p3 .pdm-name{font-size:14px}.pdm-slot.p3 .pdm-xp{font-size:15px}
+.pdm-base{width:100%;border-radius:10px 10px 0 0;display:flex;align-items:center;justify-content:center;font-size:28px}
+.pdm-slot.p1 .pdm-base{height:90px;background:linear-gradient(180deg,rgba(245,200,66,.25),rgba(245,200,66,.08));border:1px solid rgba(245,200,66,.35);border-bottom:none}
+.pdm-slot.p2 .pdm-base{height:64px;background:linear-gradient(180deg,rgba(173,181,192,.18),rgba(173,181,192,.04));border:1px solid rgba(173,181,192,.25);border-bottom:none}
+.pdm-slot.p3 .pdm-base{height:48px;background:linear-gradient(180deg,rgba(205,127,50,.18),rgba(205,127,50,.04));border:1px solid rgba(205,127,50,.25);border-bottom:none}
+
+/* Ticker */
+.tv-ticker{flex-shrink:0;padding:8px 28px;background:rgba(0,0,0,.7);border-top:1px solid rgba(245,200,66,.1);display:flex;align-items:center;gap:14px;overflow:hidden}
+.ticker-lbl{font-family:var(--font-d);font-size:10px;color:var(--gold);letter-spacing:2px;white-space:nowrap;border-right:1px solid rgba(255,255,255,.1);padding-right:14px}
+.ticker-track{flex:1;overflow:hidden}
+.ticker-inner{display:flex;gap:28px;animation:tick 35s linear infinite;white-space:nowrap}
+.ticker-item{font-family:var(--font-d);font-size:12px;color:var(--text2)}
+.ticker-item span{color:var(--gold);margin-left:5px}
+@keyframes tick{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* ══════════════════════════════════════
+   SURVEY PAGE (public mode)
+══════════════════════════════════════ */
+#pg-survey{
+  background:radial-gradient(ellipse at 20% 50%,rgba(155,92,246,.07),transparent 60%),
+             radial-gradient(ellipse at 80% 20%,rgba(59,130,246,.05),transparent 60%),var(--bg);
+  align-items:center;justify-content:center;
 }
-@keyframes toastIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
-@keyframes toastOut{from{opacity:1;transform:translateY(0)}to{opacity:0;transform:translateY(20px)}}
-.toast-name{font-family:var(--font-display);font-size:16px;font-weight:700;color:var(--text-primary)}
-.toast-xp{font-family:var(--font-display);font-size:24px;font-weight:700;color:var(--purple-light)}
-
-/* TV bottom ticker */
-.tv-ticker{
-  flex-shrink:0;padding:10px 32px;
-  background:rgba(0,0,0,0.6);border-top:1px solid rgba(245,200,66,0.1);
-  display:flex;align-items:center;gap:16px;overflow:hidden;
+.survey-frame{
+  background:rgba(12,17,32,.98);border:1px solid rgba(155,92,246,.2);
+  border-radius:20px;padding:36px 32px;max-width:560px;width:100%;
+  box-shadow:0 0 60px rgba(155,92,246,.07);
 }
-.ticker-label{font-family:var(--font-display);font-size:11px;color:var(--gold);letter-spacing:2px;white-space:nowrap;border-right:1px solid rgba(255,255,255,0.1);padding-right:16px}
-.ticker-track{flex:1;overflow:hidden;position:relative}
-.ticker-inner{display:flex;gap:32px;animation:tickerScroll 30s linear infinite;white-space:nowrap}
-.ticker-item{font-family:var(--font-display);font-size:13px;color:var(--text-secondary)}
-.ticker-item span{color:var(--gold);margin-left:6px}
-@keyframes tickerScroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-
-/* ===== SECTIONS ===== */
-.section-title{
-  font-family:var(--font-display);font-size:11px;font-weight:600;
-  color:var(--text-muted);letter-spacing:2px;text-transform:uppercase;
-  margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border-subtle);
-  margin-top:20px;
+.sv-logo{font-family:var(--font-d);font-size:14px;font-weight:700;letter-spacing:2px;color:var(--text3);text-align:center;margin-bottom:4px}
+.sv-title{font-family:var(--font-d);font-size:28px;font-weight:700;text-align:center;
+  background:linear-gradient(90deg,var(--gold),var(--purple2));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:6px}
+.sv-sub{color:var(--text2);text-align:center;font-size:13px;margin-bottom:28px}
+.sv-step{display:none}
+.sv-step.on{display:block}
+.sv-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px;max-height:340px;overflow-y:auto;padding:2px;margin-bottom:16px}
+.sv-emp{
+  padding:12px 8px;border-radius:10px;border:1px solid var(--border);
+  background:var(--surface);cursor:pointer;text-align:center;transition:all .18s;
 }
-.section-title:first-child{margin-top:0}
-
-/* Empty state */
-.empty-state{
-  text-align:center;padding:60px 20px;
-  color:var(--text-muted);
+.sv-emp:hover{border-color:var(--purple);background:rgba(155,92,246,.08)}
+.sv-emp.sel{border-color:var(--purple);background:rgba(155,92,246,.18)}
+.sv-emp-photo{width:52px;height:52px;border-radius:50%;margin:0 auto 7px;overflow:hidden;background:rgba(155,92,246,.12);display:flex;align-items:center;justify-content:center;font-family:var(--font-d);font-size:18px;font-weight:700;color:rgba(255,255,255,.18)}
+.sv-emp-photo img{width:100%;height:100%;object-fit:cover}
+.sv-emp-name{font-size:11px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sv-emp-sector{font-size:9px;color:var(--text3)}
+.sv-selected-box{display:flex;align-items:center;gap:12px;padding:12px 14px;background:rgba(155,92,246,.08);border:1px solid rgba(155,92,246,.2);border-radius:10px;margin-bottom:18px}
+.sv-sel-photo{width:44px;height:44px;border-radius:50%;overflow:hidden;background:rgba(155,92,246,.1);display:flex;align-items:center;justify-content:center;font-family:var(--font-d);font-size:16px;color:rgba(255,255,255,.2);flex-shrink:0}
+.sv-sel-photo img{width:100%;height:100%;object-fit:cover}
+.sv-sel-name{font-family:var(--font-d);font-size:17px;font-weight:700}
+.sv-sel-sector{font-size:11px;color:var(--text3)}
+.stars-row{display:flex;justify-content:center;gap:10px;margin:18px 0}
+.star{font-size:38px;cursor:pointer;transition:transform .1s;filter:grayscale(1) brightness(.4)}
+.star.on{filter:none;transform:scale(1.1)}
+.star:hover{transform:scale(1.2)}
+.sv-comment{width:100%;padding:9px 13px;border-radius:var(--r8);border:1px solid var(--border);background:rgba(255,255,255,.04);color:var(--text);font-family:var(--font-b);font-size:13px;outline:none;resize:vertical;min-height:64px;line-height:1.5;margin-top:4px}
+.sv-comment::placeholder{color:var(--text3)}
+.sv-comment:focus{border-color:var(--purple)}
+.btn-sv{
+  width:100%;padding:12px;border-radius:10px;
+  border:1px solid var(--purple);background:rgba(155,92,246,.22);color:var(--purple2);
+  cursor:pointer;font-family:var(--font-d);font-size:16px;font-weight:700;letter-spacing:1px;
+  transition:all .18s;margin-top:14px;
 }
-.empty-state svg{margin-bottom:16px;opacity:0.3}
-.empty-state p{font-size:14px;line-height:1.7}
-.empty-state .empty-btn{margin-top:20px;display:inline-flex}
+.btn-sv:hover{background:rgba(155,92,246,.36);transform:translateY(-1px)}
+.btn-sv:disabled{opacity:.35;cursor:not-allowed;transform:none}
+.sv-back{width:100%;padding:8px;border-radius:var(--r8);border:1px solid var(--border);background:transparent;color:var(--text3);cursor:pointer;font-size:12px;margin-top:6px;transition:all .18s}
+.sv-back:hover{color:var(--text);border-color:var(--border2)}
+.sv-ok{text-align:center;padding:16px 0}
+.sv-ok-icon{font-size:60px;margin-bottom:12px;display:block}
+.sv-ok-title{font-family:var(--font-d);font-size:24px;font-weight:700;color:var(--green2);margin-bottom:6px}
+.sv-ok-txt{color:var(--text3);font-size:13px;line-height:1.7}
+.xp-award{display:inline-block;padding:5px 16px;border-radius:20px;background:rgba(245,200,66,.12);border:1px solid rgba(245,200,66,.3);color:var(--gold);font-family:var(--font-d);font-size:18px;font-weight:700;margin:12px 0}
 
-/* Tooltip / confirm */
-.confirm-banner{
-  padding:14px 20px;border-radius:8px;
-  background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.3);
-  margin-bottom:16px;font-size:13px;color:#fca5a5;
+/* ── TOASTS ── */
+.toast{
+  position:fixed;top:72px;right:20px;z-index:9000;
+  padding:11px 16px;border-radius:10px;font-size:12px;font-weight:600;
+  backdrop-filter:blur(12px);border:1px solid;max-width:280px;
+  animation:tIn .25s ease,tOut .3s ease 2.6s forwards;pointer-events:none;
 }
-.confirm-banner strong{color:var(--red)}
+.toast.ok{background:rgba(34,197,94,.12);border-color:var(--green);color:var(--green2)}
+.toast.err{background:rgba(239,68,68,.12);border-color:var(--red);color:var(--red2)}
+.toast.inf{background:rgba(155,92,246,.12);border-color:var(--purple);color:var(--purple2)}
+@keyframes tIn{from{opacity:0;transform:translateX(16px)}to{opacity:1;transform:translateX(0)}}
+@keyframes tOut{to{opacity:0;transform:translateX(16px)}}
 
-/* Tag chips */
-.chip{
-  display:inline-flex;align-items:center;
-  padding:3px 9px;border-radius:20px;font-size:11px;font-weight:600;
-  border:1px solid;
-}
-.chip-common{color:var(--text-muted);border-color:var(--text-muted);background:rgba(255,255,255,0.03)}
-.chip-raro{color:var(--gold);border-color:rgba(245,200,66,0.4);background:rgba(245,200,66,0.08)}
-.chip-epico{color:var(--purple-light);border-color:rgba(155,92,246,0.4);background:rgba(155,92,246,0.1)}
-.chip-lendario{color:var(--legendary-gold);border-color:rgba(245,158,11,0.4);background:rgba(245,158,11,0.08)}
+.xp-pop{position:fixed;z-index:9999;pointer-events:none;font-family:var(--font-d);font-size:20px;font-weight:700;color:var(--purple2);text-shadow:0 0 12px rgba(155,92,246,.8);animation:xppop 1.3s ease forwards}
+@keyframes xppop{from{opacity:1;transform:translateY(0) scale(1)}to{opacity:0;transform:translateY(-70px) scale(1.4)}}
 
-/* XP notification bubble */
-.xp-notif{
-  position:fixed;z-index:9999;pointer-events:none;
-  font-family:var(--font-display);font-size:18px;font-weight:700;
-  color:var(--purple-light);text-shadow:0 0 10px rgba(155,92,246,0.8);
-  animation:floatUp 1.2s ease forwards;
-}
-@keyframes floatUp{from{opacity:1;transform:translateY(0) scale(1)}to{opacity:0;transform:translateY(-60px) scale(1.3)}}
-
-/* Toast notification */
-.notif-toast{
-  position:fixed;top:80px;right:24px;z-index:9000;
-  padding:12px 18px;border-radius:10px;font-size:13px;font-weight:600;
-  backdrop-filter:blur(12px);border:1px solid;
-  animation:toastSlide 0.3s ease,toastFade 0.3s ease 2.7s forwards;
-  max-width:300px;
-}
-.notif-toast.success{background:rgba(34,197,94,0.15);border-color:var(--green);color:#86efac}
-.notif-toast.error{background:rgba(239,68,68,0.15);border-color:var(--red);color:#fca5a5}
-.notif-toast.info{background:rgba(155,92,246,0.15);border-color:var(--purple);color:var(--purple-light)}
-@keyframes toastSlide{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
-@keyframes toastFade{to{opacity:0;transform:translateX(20px)}}
-
-/* Survey comment */
-.survey-comment{width:100%;padding:10px 14px;border-radius:8px;border:1px solid var(--border-subtle);background:var(--bg-input);color:var(--text-primary);font-family:var(--font-body);font-size:13px;outline:none;resize:vertical;min-height:70px;margin-top:12px}
-.survey-comment::placeholder{color:var(--text-muted)}
-.survey-comment:focus{border-color:var(--purple)}
-
-/* Responsive hide for tv mode */
-.tv-mode-only{display:none}
+/* Register winner modal */
+.winner-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:10px;max-height:280px;overflow-y:auto;padding:2px;margin-bottom:12px}
+.winner-emp{padding:10px 8px;border-radius:10px;border:1px solid var(--border);background:var(--surface);cursor:pointer;text-align:center;transition:all .18s}
+.winner-emp:hover{border-color:var(--gold3);background:rgba(245,200,66,.07)}
+.winner-emp.sel{border-color:var(--gold);background:rgba(245,200,66,.14)}
+.winner-emp-photo{width:46px;height:46px;border-radius:50%;margin:0 auto 6px;overflow:hidden;background:rgba(245,200,66,.08);display:flex;align-items:center;justify-content:center;font-family:var(--font-d);font-size:15px;font-weight:700;color:rgba(255,255,255,.18)}
+.winner-emp-photo img{width:100%;height:100%;object-fit:cover}
+.winner-emp-name{font-size:10px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 </style>
 </head>
 <body>
 
-<canvas id="bg-canvas"></canvas>
+<!-- STARS -->
+<div id="stars-bg"></div>
 
-<!-- ===== ADMIN VIEW ===== -->
-<div id="view-admin" class="view active">
-  <nav class="topnav">
-    <div>
-      <div class="topnav-logo">⚔ LÍDER CORRETORA</div>
-      <div class="topnav-sub">Funcionário do Mês</div>
+<!-- ══════════════════════════════════════
+     ADMIN PAGE
+══════════════════════════════════════ -->
+<div id="pg-admin" class="page on">
+  <nav class="nav">
+    <div class="nav-brand">
+      <div class="nav-brand-name">⚔ LÍDER CORRETORA</div>
+      <div class="nav-brand-sub">Funcionário do Mês</div>
     </div>
-    <div class="topnav-spacer"></div>
-    <span class="month-badge" id="current-month-badge"></span>
-    <button class="nav-btn active" onclick="showView('admin')">
+    <div class="nav-div"></div>
+    <span class="month-pill" id="month-pill"></span>
+    <div class="nav-spacer"></div>
+    <button class="nbtn on" onclick="goPage('admin')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
-      Painel
+      Ranking
     </button>
-    <button class="nav-btn" onclick="showView('survey')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-      Pesquisa
+    <button class="nbtn" onclick="goPage('hall')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 21h8M12 17v4M12 3L9.5 8.5 3 9.27l5 4.87L6.82 21 12 17.77 17.18 21 16 14.14l5-4.87-6.5-.77L12 3z"/></svg>
+      Hall da Fama
     </button>
-    <button class="nav-btn" onclick="enterTV()">
+    <button class="nbtn" onclick="enterTV()">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="12" rx="2"/><path d="M17 21H7M12 17v4"/></svg>
       Display TV
     </button>
-    <button class="nav-btn" onclick="openAddModal()">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 10-16 0"/><path d="M12 12v6M9 15l3 3 3-3"/></svg>
+    <button class="nbtn" onclick="openAdd()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 10-16 0"/><path d="M12 13v5M9.5 16h5"/></svg>
       + Funcionário
     </button>
   </nav>
 
-  <div class="admin-content">
-    <!-- Sidebar -->
+  <div class="admin-body">
+    <!-- SIDEBAR -->
     <aside class="sidebar">
-      <h3>Resumo do Mês</h3>
-      <div class="stat-block">
-        <div class="val" id="stat-total-emp">0</div>
-        <div class="lbl">Funcionários ativos</div>
-      </div>
-      <div class="stat-block">
-        <div class="val" id="stat-total-xp">0</div>
-        <div class="lbl">XP total distribuído</div>
-      </div>
-      <div class="stat-block">
-        <div class="val" id="stat-surveys">0</div>
-        <div class="lbl">Avaliações recebidas</div>
-      </div>
-      <div class="stat-block" style="background:rgba(245,200,66,0.05);border-color:rgba(245,200,66,0.2)">
-        <div class="val" style="color:var(--gold)" id="stat-leader">—</div>
-        <div class="lbl">Líder atual</div>
+      <div class="sb-section">
+        <div class="sb-title">Resumo do Mês</div>
+        <div class="sb-stat"><div class="sb-stat-val purple" id="s-total">0</div><div class="sb-stat-lbl">Funcionários ativos</div></div>
+        <div class="sb-stat"><div class="sb-stat-val gold" id="s-xp">0</div><div class="sb-stat-lbl">XP total distribuído</div></div>
+        <div class="sb-stat"><div class="sb-stat-val teal" id="s-surveys">0</div><div class="sb-stat-lbl">Avaliações recebidas</div></div>
+        <div class="sb-stat" style="background:rgba(245,200,66,.05);border-color:rgba(245,200,66,.2)">
+          <div class="sb-stat-val gold" id="s-leader" style="font-size:20px;line-height:1.2">—</div>
+          <div class="sb-stat-lbl">Líder atual</div>
+        </div>
       </div>
 
-      <h3 style="margin-top:20px">Raridade dos Cards</h3>
-      <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:16px;font-size:12px">
-        <div style="display:flex;justify-content:space-between;align-items:center"><span class="chip chip-common">Comum</span><span style="color:var(--text-muted)">0 – 999 XP</span></div>
-        <div style="display:flex;justify-content:space-between;align-items:center"><span class="chip chip-raro">Raro</span><span style="color:var(--text-muted)">1.000 – 4.999</span></div>
-        <div style="display:flex;justify-content:space-between;align-items:center"><span class="chip chip-epico">Épico</span><span style="color:var(--text-muted)">5.000 – 14.999</span></div>
-        <div style="display:flex;justify-content:space-between;align-items:center"><span class="chip chip-lendario">Lendário</span><span style="color:var(--text-muted)">15.000+</span></div>
+      <div class="sb-section">
+        <div class="sb-title">Raridade dos Cards</div>
+        <div class="rarity-row"><span class="r-chip r-comum">COMUM</span><span style="color:var(--text3);font-size:10px">0 – 999 XP</span></div>
+        <div class="rarity-row" style="margin-top:5px"><span class="r-chip r-raro">RARO</span><span style="color:var(--text3);font-size:10px">1.000 – 4.999</span></div>
+        <div class="rarity-row" style="margin-top:5px"><span class="r-chip r-epico">ÉPICO</span><span style="color:var(--text3);font-size:10px">5.000 – 14.999</span></div>
+        <div class="rarity-row" style="margin-top:5px"><span class="r-chip r-lendario">LENDÁRIO</span><span style="color:var(--text3);font-size:10px">15.000+</span></div>
       </div>
 
-      <h3>Ações</h3>
-      <button class="sidebar-btn success" onclick="openAddModal()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
-        Novo Funcionário
-      </button>
-      <button class="sidebar-btn" onclick="exportData()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
-        Exportar Dados
-      </button>
-      <button class="sidebar-btn" onclick="importData()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
-        Importar Dados
-      </button>
-      <input type="file" id="import-input" accept=".json" style="display:none" onchange="handleImport(event)">
-      <button class="sidebar-btn danger" onclick="confirmResetAll()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
-        Reset Total de XP
-      </button>
+      <div class="sb-section">
+        <div class="sb-title">Ações</div>
+        <button class="sbtn" onclick="openAdd()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>Novo Funcionário
+        </button>
+        <button class="sbtn teal" onclick="openHallReg()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 21h8M12 17v4M12 3l-2.5 5.5L3 9.27l5 4.87L6.82 21 12 17.77 17.18 21 16 14.14l5-4.87-6.5-.77L12 3z"/></svg>Registrar Vencedor
+        </button>
+        <button class="sbtn" onclick="exportData()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>Exportar Dados
+        </button>
+        <button class="sbtn" onclick="document.getElementById('imp-in').click()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>Importar Dados
+        </button>
+        <input type="file" id="imp-in" accept=".json" style="display:none" onchange="handleImport(event)">
+        <button class="sbtn red" onclick="openResetModal()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 109-9 9.75 9.75 0 00-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>Reset Total de XP
+        </button>
+      </div>
     </aside>
 
-    <!-- Main cards -->
-    <main class="main-area">
-      <div class="main-header">
-        <h2>🏆 Ranking</h2>
-        <input class="search-box" type="text" placeholder="Buscar funcionário..." id="search-input" oninput="renderCards()">
-        <select class="filter-select" id="filter-sector" onchange="renderCards()">
-          <option value="">Todos os setores</option>
+    <!-- MAIN -->
+    <div class="main">
+      <!-- SECTOR TABS -->
+      <div class="sector-tabs" id="sector-tabs"></div>
+
+      <!-- TOOLBAR -->
+      <div class="toolbar">
+        <input class="search-inp" type="text" placeholder="🔍 Buscar funcionário..." id="search-q" oninput="renderCards()">
+        <select class="sel" id="sort-sel" onchange="renderCards()">
+          <option value="xp">Ordenar por XP</option>
+          <option value="name">Ordenar por nome</option>
+          <option value="rarity">Ordenar por raridade</option>
         </select>
-        <select class="filter-select" id="filter-rarity" onchange="renderCards()">
-          <option value="">Todas as raridades</option>
-          <option value="lendario">Lendário</option>
-          <option value="epico">Épico</option>
-          <option value="raro">Raro</option>
-          <option value="comum">Comum</option>
-        </select>
-        <div class="main-header-spacer"></div>
-        <button class="btn-primary" onclick="openAddModal()">
+        <div class="tb-spacer"></div>
+        <button class="btn-p" onclick="openAdd()">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
           Adicionar
         </button>
       </div>
 
-      <div class="cards-grid" id="cards-grid"></div>
-    </main>
+      <!-- CARDS -->
+      <div class="cards-area" id="cards-area"></div>
+    </div>
   </div>
 </div>
 
-<!-- ===== SURVEY VIEW ===== -->
-<div id="view-survey" class="view">
-  <nav class="topnav">
-    <div>
-      <div class="topnav-logo">⚔ LÍDER CORRETORA</div>
-      <div class="topnav-sub">Pesquisa de Satisfação</div>
+<!-- ══════════════════════════════════════
+     HALL DA FAMA PAGE
+══════════════════════════════════════ -->
+<div id="pg-hall" class="page" style="overflow:hidden">
+  <nav class="nav">
+    <div class="nav-brand">
+      <div class="nav-brand-name">⚔ LÍDER CORRETORA</div>
+      <div class="nav-brand-sub">Hall da Fama</div>
     </div>
-    <div class="topnav-spacer"></div>
-    <button class="nav-btn" onclick="showView('admin')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-      Voltar ao Painel
-    </button>
+    <div class="nav-spacer"></div>
+    <button class="nbtn" onclick="goPage('admin')">← Voltar ao Painel</button>
+    <button class="nbtn" onclick="goPage('hall');openHallReg()">🏆 Registrar Vencedor</button>
   </nav>
-  <div class="survey-wrap">
-    <div class="survey-card">
-      <h1>⭐ Avalie seu Atendimento</h1>
-      <p>Sua opinião é muito importante para nós</p>
-
-      <!-- Step 1: choose employee -->
-      <div class="survey-step active" id="survey-step-1">
-        <p style="font-size:13px;color:var(--text-secondary);margin-bottom:14px;text-align:left">Selecione o funcionário que te atendeu:</p>
-        <div class="survey-grid" id="survey-emp-grid"></div>
-        <button class="btn-survey" id="btn-survey-next" onclick="surveyNextStep()" disabled>Continuar →</button>
-      </div>
-
-      <!-- Step 2: rate -->
-      <div class="survey-step" id="survey-step-2">
-        <div class="survey-selected-info" id="survey-selected-info"></div>
-        <p style="text-align:center;color:var(--text-secondary);font-size:14px">Como você avalia o atendimento?</p>
-        <div class="stars-wrap" id="stars-wrap">
-          <span class="star" data-val="1" onclick="selectStar(1)">⭐</span>
-          <span class="star" data-val="2" onclick="selectStar(2)">⭐</span>
-          <span class="star" data-val="3" onclick="selectStar(3)">⭐</span>
-          <span class="star" data-val="4" onclick="selectStar(4)">⭐</span>
-          <span class="star" data-val="5" onclick="selectStar(5)">⭐</span>
-        </div>
-        <textarea class="survey-comment" placeholder="Comentário opcional (não obrigatório)..." id="survey-comment"></textarea>
-        <button class="btn-survey" id="btn-survey-submit" onclick="submitSurvey()" disabled>Enviar Avaliação ⚡</button>
-        <button class="btn-cancel" style="width:100%;margin-top:8px;text-align:center" onclick="surveyBack()">← Voltar</button>
-      </div>
-
-      <!-- Step 3: success -->
-      <div class="survey-step" id="survey-step-3">
-        <div class="survey-success">
-          <div class="check">✅</div>
-          <h2>Obrigado!</h2>
-          <p>Sua avaliação foi registrada com sucesso.<br>Isso ajuda nossa equipe a melhorar cada dia!</p>
-          <button class="btn-survey" style="margin-top:24px" onclick="resetSurvey()">Nova Avaliação</button>
-        </div>
-      </div>
-    </div>
+  <div class="hall-content" style="flex:1;overflow-y:auto;padding:28px">
+    <div class="hall-title">🏆 HALL DA FAMA</div>
+    <div class="hall-sub">Funcionários do Mês — Líder Corretora</div>
+    <div class="hall-grid" id="hall-grid"></div>
   </div>
 </div>
 
-<!-- ===== TV VIEW ===== -->
-<div id="view-tv">
-  <div class="tv-header">
+<!-- ══════════════════════════════════════
+     TV PAGE
+══════════════════════════════════════ -->
+<div id="pg-tv" class="page">
+  <div class="tv-hdr">
     <div class="tv-logo">⚔ LÍDER CORRETORA</div>
-    <div class="tv-month" id="tv-month-label"></div>
-    <button class="tv-exit" onclick="exitTV()">✕ Sair</button>
+    <div class="tv-month-lbl" id="tv-month"></div>
+    <button class="tv-exit-btn" onclick="exitTV()">✕ Sair do Display</button>
   </div>
-  <div class="tv-content" id="tv-content"></div>
+  <div class="tv-body">
+    <div class="tv-rank-area" id="tv-rank-area"></div>
+    <div class="tv-qr-panel">
+      <div class="tv-qr-title">📱 Avalie seu Atendimento</div>
+      <div class="tv-qr-box" id="tv-qr"></div>
+      <div class="tv-qr-stars">⭐⭐⭐⭐⭐</div>
+      <div class="tv-qr-desc">Escaneie o QR Code e avalie o funcionário que te atendeu!</div>
+    </div>
+  </div>
   <div class="tv-ticker">
-    <span class="ticker-label">🏆 RANKING</span>
-    <div class="ticker-track"><div class="ticker-inner" id="ticker-inner"></div></div>
+    <span class="ticker-lbl">RANKING AO VIVO</span>
+    <div class="ticker-track"><div class="ticker-inner" id="tv-ticker"></div></div>
   </div>
 </div>
 
-<!-- ===== MODALS ===== -->
-<!-- Add/Edit Employee Modal -->
-<div class="modal-overlay hidden" id="modal-employee">
-  <div class="modal modal-big">
-    <button class="modal-close" onclick="closeModal('modal-employee')">✕</button>
-    <h2 id="modal-emp-title">Novo Funcionário</h2>
-    <div style="text-align:center">
-      <div class="photo-upload-area" id="photo-upload-area" onclick="document.getElementById('photo-input').click()">
-        <img id="photo-preview" style="display:none">
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="rgba(155,92,246,0.5)" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 10-16 0"/></svg>
-        <div class="photo-upload-text">Clique para<br>adicionar foto</div>
-      </div>
-      <input type="file" id="photo-input" accept="image/*" style="display:none" onchange="handlePhotoUpload(event)">
+<!-- ══════════════════════════════════════
+     SURVEY PAGE (PUBLIC)
+══════════════════════════════════════ -->
+<div id="pg-survey" class="page">
+  <div class="survey-frame">
+    <div class="sv-logo">⚔ LÍDER CORRETORA</div>
+    <div class="sv-title">⭐ Avalie seu Atendimento</div>
+    <div class="sv-sub">Sua opinião nos ajuda a melhorar cada dia</div>
+
+    <div class="sv-step on" id="sv1">
+      <p style="font-size:12px;color:var(--text3);margin-bottom:10px">Selecione o funcionário que te atendeu:</p>
+      <div class="sv-grid" id="sv-grid"></div>
+      <button class="btn-sv" id="btn-sv-next" onclick="svNext()" disabled>Continuar →</button>
     </div>
-    <div class="form-row">
-      <div class="form-group">
-        <label>Nome completo *</label>
-        <input class="form-input" type="text" id="emp-name" placeholder="João Silva">
+
+    <div class="sv-step" id="sv2">
+      <div class="sv-selected-box" id="sv-selected-box"></div>
+      <p style="text-align:center;font-size:13px;color:var(--text2)">Como você avalia o atendimento?</p>
+      <div class="stars-row" id="stars-row">
+        <span class="star" data-v="1" onclick="pickStar(1)">⭐</span>
+        <span class="star" data-v="2" onclick="pickStar(2)">⭐</span>
+        <span class="star" data-v="3" onclick="pickStar(3)">⭐</span>
+        <span class="star" data-v="4" onclick="pickStar(4)">⭐</span>
+        <span class="star" data-v="5" onclick="pickStar(5)">⭐</span>
       </div>
-      <div class="form-group">
-        <label>Cargo</label>
-        <input class="form-input" type="text" id="emp-role" placeholder="Corretor">
-      </div>
+      <label style="font-size:11px;color:var(--text3)">Comentário (opcional)</label>
+      <textarea class="sv-comment" id="sv-comment" placeholder="Deixe um comentário sobre seu atendimento..."></textarea>
+      <button class="btn-sv" id="btn-sv-sub" onclick="svSubmit()" disabled>Enviar Avaliação ⚡</button>
+      <button class="sv-back" onclick="svBack()">← Voltar</button>
     </div>
-    <div class="form-row">
-      <div class="form-group">
-        <label>Setor</label>
-        <input class="form-input" type="text" id="emp-sector" placeholder="Vendas" list="sectors-datalist">
-        <datalist id="sectors-datalist"></datalist>
+
+    <div class="sv-step" id="sv3">
+      <div class="sv-ok">
+        <span class="sv-ok-icon">✅</span>
+        <div class="sv-ok-title">Obrigado!</div>
+        <div class="sv-ok-txt">Sua avaliação foi registrada com sucesso.<br>Isso motiva nossa equipe a melhorar cada vez mais!</div>
+        <div class="xp-award" id="sv-xp-award">+100 XP atribuído!</div>
+        <button class="btn-sv" style="margin-top:20px" onclick="svReset()">Nova Avaliação</button>
       </div>
-      <div class="form-group">
-        <label>XP inicial</label>
-        <input class="form-input" type="number" id="emp-xp" placeholder="0" min="0">
-      </div>
-    </div>
-    <div class="form-group">
-      <label>Observação / descrição</label>
-      <input class="form-input" type="text" id="emp-note" placeholder="Destaque ou observação opcional">
-    </div>
-    <div class="form-actions">
-      <button class="btn-cancel" onclick="closeModal('modal-employee')">Cancelar</button>
-      <button class="btn-save" onclick="saveEmployee()">💾 Salvar</button>
     </div>
   </div>
 </div>
 
-<!-- XP Edit Modal -->
-<div class="modal-overlay hidden" id="modal-xp">
-  <div class="modal">
-    <button class="modal-close" onclick="closeModal('modal-xp')">✕</button>
-    <h2>⚡ Gerenciar XP</h2>
-    <div id="xp-emp-info" style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
-      <div id="xp-emp-photo" style="width:52px;height:52px;border-radius:50%;overflow:hidden;flex-shrink:0;border:2px solid var(--purple)"></div>
+<!-- ══════════════════════════════════════
+     MODALS
+══════════════════════════════════════ -->
+<!-- Add/Edit Employee -->
+<div class="overlay h" id="m-emp">
+  <div class="modal modal-lg">
+    <button class="mclose" onclick="closeM('m-emp')">✕</button>
+    <h2 id="m-emp-title">Novo Funcionário</h2>
+    <div style="display:grid;grid-template-columns:160px 1fr;gap:24px;align-items:start">
       <div>
-        <div style="font-family:var(--font-display);font-size:18px;font-weight:700" id="xp-emp-name"></div>
-        <div style="font-size:12px;color:var(--text-muted)" id="xp-emp-sector"></div>
+        <div class="photo-area" id="photo-area" onclick="document.getElementById('photo-in').click()">
+          <img id="photo-prev" style="display:none">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="rgba(155,92,246,.5)" stroke-width="1.5" id="photo-icon"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 10-16 0"/></svg>
+          <div class="photo-area-txt" id="photo-txt">Clique para adicionar foto</div>
+        </div>
+        <input type="file" id="photo-in" accept="image/*" style="display:none" onchange="handlePhoto(event)">
+        <button onclick="clearPhoto()" style="width:100%;padding:5px;border-radius:6px;border:1px solid var(--border);background:transparent;color:var(--text3);cursor:pointer;font-size:10px;margin-top:4px">Remover foto</button>
+      </div>
+      <div>
+        <div class="form-section">Informações Pessoais</div>
+        <div class="frow">
+          <div class="fg"><label>Nome completo *</label><input class="finput" id="f-name" type="text" placeholder="João Silva"></div>
+          <div class="fg"><label>Apelido / Nome no card</label><input class="finput" id="f-nick" type="text" placeholder="Joãozinho"></div>
+        </div>
+        <div class="frow3">
+          <div class="fg"><label>Data de nascimento</label><input class="finput" id="f-birth" type="date"></div>
+          <div class="fg"><label>Telefone / Ramal</label><input class="finput" id="f-phone" type="text" placeholder="(92) 9 9999-9999"></div>
+          <div class="fg"><label>E-mail</label><input class="finput" id="f-email" type="email" placeholder="joao@lider.com"></div>
+        </div>
+        <div class="form-section">Cargo & Setor</div>
+        <div class="frow">
+          <div class="fg"><label>Cargo / Função</label><input class="finput" id="f-role" type="text" placeholder="Corretor" list="dl-roles"><datalist id="dl-roles"></datalist></div>
+          <div class="fg"><label>Setor *</label><input class="finput" id="f-sector" type="text" placeholder="Vendas" list="dl-sectors"><datalist id="dl-sectors"></datalist></div>
+        </div>
+        <div class="frow3">
+          <div class="fg"><label>Data de admissão</label><input class="finput" id="f-admit" type="date"></div>
+          <div class="fg"><label>Meta individual (XP/mês)</label><input class="finput" id="f-goal" type="number" placeholder="500" min="0"></div>
+          <div class="fg"><label>XP inicial</label><input class="finput" id="f-xp" type="number" placeholder="0" min="0"></div>
+        </div>
+        <div class="form-section">Observações</div>
+        <div class="fg"><label>Observação / Destaque</label><textarea class="finput" id="f-note" placeholder="Informações adicionais sobre o funcionário..."></textarea></div>
       </div>
     </div>
-    <div class="xp-display">
-      <div class="xp-current" id="xp-current-val">0</div>
-      <div class="xp-lbl">XP Atual</div>
-    </div>
-    <div class="form-group">
-      <label>Ajuste de XP (+ adicionar / - remover)</label>
-      <input class="form-input" type="number" id="xp-adjust-val" placeholder="Ex: 100 ou -50">
-    </div>
-    <div class="xp-quick-btns">
-      <button class="xp-quick pos" onclick="setXpQuick(10)">+10</button>
-      <button class="xp-quick pos" onclick="setXpQuick(25)">+25</button>
-      <button class="xp-quick pos" onclick="setXpQuick(50)">+50</button>
-      <button class="xp-quick pos" onclick="setXpQuick(100)">+100</button>
-      <button class="xp-quick neg" onclick="setXpQuick(-10)">-10</button>
-      <button class="xp-quick neg" onclick="setXpQuick(-25)">-25</button>
-      <button class="xp-quick neg" onclick="setXpQuick(-50)">-50</button>
-      <button class="xp-quick neg" onclick="setXpQuick(0)">ZERAR</button>
-    </div>
-    <div class="form-group">
-      <label>Motivo (obrigatório)</label>
-      <input class="form-input" type="text" id="xp-reason" placeholder="Ex: Bateu meta do mês, avaliação 5 estrelas...">
-    </div>
-    <div class="form-actions">
-      <button class="btn-cancel" onclick="closeModal('modal-xp')">Cancelar</button>
-      <button class="btn-save" onclick="applyXpChange()">⚡ Aplicar</button>
-    </div>
-
-    <div style="margin-top:20px">
-      <div class="section-title">Histórico de XP</div>
-      <div class="log-entries" id="xp-log-entries"></div>
+    <div class="fact">
+      <button class="btn-cancel" onclick="closeM('m-emp')">Cancelar</button>
+      <button class="btn-save" onclick="saveEmp()">💾 Salvar Funcionário</button>
     </div>
   </div>
 </div>
 
-<!-- Reset Confirm Modal -->
-<div class="modal-overlay hidden" id="modal-reset">
-  <div class="modal" style="max-width:400px">
-    <button class="modal-close" onclick="closeModal('modal-reset')">✕</button>
-    <h2>⚠ Confirmar Reset</h2>
-    <div class="confirm-banner">
-      Esta ação vai <strong>zerar o XP de TODOS</strong> os funcionários. Esta operação não pode ser desfeita.
+<!-- XP Modal -->
+<div class="overlay h" id="m-xp">
+  <div class="modal modal-md">
+    <button class="mclose" onclick="closeM('m-xp')">✕</button>
+    <h2>⚡ Gerenciar XP</h2>
+    <div id="xp-emp-hdr" style="display:flex;align-items:center;gap:12px;margin-bottom:14px">
+      <div id="xp-ph" style="width:50px;height:50px;border-radius:50%;overflow:hidden;flex-shrink:0;border:2px solid var(--purple)"></div>
+      <div><div style="font-family:var(--font-d);font-size:18px;font-weight:700" id="xp-nm"></div><div style="font-size:11px;color:var(--text3)" id="xp-sc"></div></div>
     </div>
-    <p style="font-size:13px;color:var(--text-muted);margin-bottom:20px">Digite <strong style="color:var(--red)">RESETAR</strong> para confirmar:</p>
-    <input class="form-input" type="text" id="reset-confirm-input" placeholder="RESETAR">
-    <div class="form-actions">
-      <button class="btn-cancel" onclick="closeModal('modal-reset')">Cancelar</button>
-      <button class="btn-save" style="border-color:var(--red);color:#fca5a5;background:rgba(239,68,68,0.15)" onclick="executeReset()">🔥 Resetar Tudo</button>
+    <div class="xp-hero"><div class="xp-hero-num" id="xp-cur">0</div><div class="xp-hero-lbl">XP Atual</div></div>
+    <div class="fg"><label>Ajuste (+adicionar / -remover)</label><input class="finput" type="number" id="xp-adj" placeholder="Ex: 100 ou -50"></div>
+    <div class="xp-btns">
+      <button class="xqb p" onclick="qxp(10)">+10</button><button class="xqb p" onclick="qxp(25)">+25</button>
+      <button class="xqb p" onclick="qxp(50)">+50</button><button class="xqb p" onclick="qxp(100)">+100</button>
+      <button class="xqb n" onclick="qxp(-10)">-10</button><button class="xqb n" onclick="qxp(-25)">-25</button>
+      <button class="xqb n" onclick="qxp(-50)">-50</button><button class="xqb n" onclick="qxp('zero')">ZERAR</button>
+    </div>
+    <div class="fg"><label>Motivo *</label><input class="finput" id="xp-reason" placeholder="Ex: Bateu meta do mês, avaliação 5 estrelas..."></div>
+    <div class="fact">
+      <button class="btn-cancel" onclick="closeM('m-xp')">Cancelar</button>
+      <button class="btn-save" onclick="applyXP()">⚡ Aplicar</button>
+    </div>
+    <div style="margin-top:18px">
+      <div style="font-size:10px;color:var(--text3);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;font-weight:600">Histórico de XP</div>
+      <div class="log-list" id="xp-log"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Profile Modal -->
+<div class="overlay h" id="m-profile">
+  <div class="modal modal-xl">
+    <button class="mclose" onclick="closeM('m-profile')">✕</button>
+    <h2>👤 Ficha do Funcionário</h2>
+    <div class="profile-grid" id="profile-content"></div>
+  </div>
+</div>
+
+<!-- Reset Modal -->
+<div class="overlay h" id="m-reset">
+  <div class="modal modal-sm">
+    <button class="mclose" onclick="closeM('m-reset')">✕</button>
+    <h2>⚠ Reset Total de XP</h2>
+    <div style="padding:12px;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.25);border-radius:var(--r8);margin-bottom:14px;font-size:12px;color:var(--red2);line-height:1.6">
+      Esta ação vai <strong>zerar o XP de TODOS</strong> os funcionários. O histórico de logs será mantido, mas os pontos do mês atual serão perdidos.
+    </div>
+    <div class="fg"><label>Digite RESETAR para confirmar</label><input class="finput" id="reset-inp" placeholder="RESETAR"></div>
+    <div class="fact">
+      <button class="btn-cancel" onclick="closeM('m-reset')">Cancelar</button>
+      <button class="btn-danger" onclick="doReset()">🔥 Resetar Tudo</button>
+    </div>
+  </div>
+</div>
+
+<!-- Hall Reg Modal -->
+<div class="overlay h" id="m-hallreg">
+  <div class="modal modal-md">
+    <button class="mclose" onclick="closeM('m-hallreg')">✕</button>
+    <h2>🏆 Registrar Funcionário do Mês</h2>
+    <div class="frow" style="margin-bottom:12px">
+      <div class="fg"><label>Mês</label>
+        <select class="finput" id="hall-month">
+          <option value="0">Janeiro</option><option value="1">Fevereiro</option><option value="2">Março</option>
+          <option value="3">Abril</option><option value="4">Maio</option><option value="5">Junho</option>
+          <option value="6">Julho</option><option value="7">Agosto</option><option value="8">Setembro</option>
+          <option value="9">Outubro</option><option value="10">Novembro</option><option value="11">Dezembro</option>
+        </select>
+      </div>
+      <div class="fg"><label>Ano</label><input class="finput" id="hall-year" type="number" min="2020" max="2099"></div>
+    </div>
+    <p style="font-size:12px;color:var(--text3);margin-bottom:10px">Selecione o vencedor:</p>
+    <div class="winner-grid" id="winner-grid"></div>
+    <div class="fg"><label>Prêmio / Observação</label><input class="finput" id="hall-prize" placeholder="Ex: Vale-presente R$200, Folga extra..."></div>
+    <div class="fact">
+      <button class="btn-cancel" onclick="closeM('m-hallreg')">Cancelar</button>
+      <button class="btn-save" onclick="saveHall()">🏆 Registrar</button>
     </div>
   </div>
 </div>
 
 <script>
-// ===== STATE =====
-let employees = [];
-let xpLogs = {};
-let surveyStats = {count:0};
-let currentEditId = null;
-let currentXpId = null;
-let selectedSurveyEmp = null;
-let selectedStar = 0;
+// ══ STATE ══
+let emps=[],logs={},hall=[],svStats={count:0},curEdit=null,curXpId=null,svEmpId=null,svStar=0,activeSector='TODOS',hallSelId=null;
+const MONTHS=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+const XP_STAR={1:10,2:20,3:35,4:50,5:100};
 
-const XP_PER_STAR = {1:10,2:20,3:35,4:50,5:100};
-const MONTHS = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
-
-// ===== PERSISTENCE =====
-function save(){localStorage.setItem('lider_emp',JSON.stringify(employees));localStorage.setItem('lider_logs',JSON.stringify(xpLogs));localStorage.setItem('lider_surveys',JSON.stringify(surveyStats))}
+// ══ PERSIST ══
+function save(){localStorage.setItem('lc_e',JSON.stringify(emps));localStorage.setItem('lc_l',JSON.stringify(logs));localStorage.setItem('lc_h',JSON.stringify(hall));localStorage.setItem('lc_s',JSON.stringify(svStats))}
 function load(){
-  const e=localStorage.getItem('lider_emp');if(e)employees=JSON.parse(e);
-  const l=localStorage.getItem('lider_logs');if(l)xpLogs=JSON.parse(l);
-  const s=localStorage.getItem('lider_surveys');if(s)surveyStats=JSON.parse(s);
+  try{const e=localStorage.getItem('lc_e');if(e)emps=JSON.parse(e)}catch(e){}
+  try{const l=localStorage.getItem('lc_l');if(l)logs=JSON.parse(l)}catch(e){}
+  try{const h=localStorage.getItem('lc_h');if(h)hall=JSON.parse(h)}catch(e){}
+  try{const s=localStorage.getItem('lc_s');if(s)svStats=JSON.parse(s)}catch(e){}
 }
 
-// ===== RARITY =====
-function getRarity(xp){
-  if(xp>=15000)return 'lendario';
-  if(xp>=5000)return'epico';
-  if(xp>=1000)return'raro';
-  return'comum';
-}
+// ══ HELPERS ══
+function getRarity(xp){return xp>=15000?'lendario':xp>=5000?'epico':xp>=1000?'raro':'comum'}
 function getRarityLabel(r){return{comum:'Comum',raro:'Raro',epico:'Épico',lendario:'Lendário'}[r]}
 function getLevel(xp){return Math.max(1,Math.floor(Math.sqrt(xp/10))+1)}
-function getXpToNext(xp){
-  const thresholds=[1000,5000,15000,999999];
-  for(const t of thresholds)if(xp<t)return{current:xp,next:t,pct:Math.min(100,(xp/(t))*100)};
-  return{current:xp,next:999999,pct:100};
+function getXpPct(xp){const t=[1000,5000,15000,99999];for(const th of t)if(xp<th)return Math.min(100,(xp/th)*100);return 100}
+function initials(n){return(n||'').split(' ').slice(0,2).map(w=>w[0]||'').join('').toUpperCase()}
+function fmtXP(n){return(n||0).toLocaleString('pt-BR')}
+function sectors(){return['TODOS',...new Set(emps.map(e=>e.sector).filter(Boolean).sort())]}
+function getSurveyURL(){return window.location.href.split('?')[0]+'?mode=survey'}
+
+// ══ PHOTO HELPERS ══
+function photoEl(emp,size=52,round=true){
+  const rad=round?'50%':`var(--r8)`;
+  if(emp&&emp.photo)return`<img src="${emp.photo}" style="width:${size}px;height:${size}px;object-fit:cover;border-radius:${rad}">`;
+  return`<div style="width:${size}px;height:${size}px;border-radius:${rad};background:rgba(155,92,246,.1);display:flex;align-items:center;justify-content:center;font-family:var(--font-d);font-size:${Math.floor(size*.36)}px;font-weight:700;color:rgba(255,255,255,.18)">${initials(emp?.name||'')}</div>`;
 }
 
-// ===== PHOTO HELPERS =====
-function getInitials(name){return name.split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase()}
-function photoOrInitials(emp,size=60){
-  if(emp.photo)return`<img src="${emp.photo}" style="width:${size}px;height:${size}px;object-fit:cover;border-radius:inherit">`;
-  return`<span style="font-family:var(--font-display);font-size:${size*0.4}px;font-weight:700;color:rgba(255,255,255,0.2)">${getInitials(emp.name)}</span>`;
-}
-
-// ===== RENDER CARDS =====
-function renderCards(){
-  const q=(document.getElementById('search-input').value||'').toLowerCase();
-  const sector=document.getElementById('filter-sector').value;
-  const rarity=document.getElementById('filter-rarity').value;
-  let filtered=[...employees].filter(e=>{
-    if(q&&!e.name.toLowerCase().includes(q)&&!(e.sector||'').toLowerCase().includes(q))return false;
-    if(sector&&e.sector!==sector)return false;
-    if(rarity&&getRarity(e.xp||0)!==rarity)return false;
-    return true;
-  }).sort((a,b)=>(b.xp||0)-(a.xp||0));
-
-  const grid=document.getElementById('cards-grid');
-  if(!filtered.length){
-    grid.innerHTML=`<div class="empty-state" style="grid-column:1/-1"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 10-16 0"/></svg><p>Nenhum funcionário encontrado.<br>Clique em <strong>Adicionar</strong> para começar.</p></div>`;
-    return;
+// ══ STARS BG ══
+function initStars(){
+  const bg=document.getElementById('stars-bg');
+  for(let i=0;i<140;i++){
+    const s=document.createElement('div');s.className='star-particle';
+    const sz=Math.random()*1.5+.3;
+    s.style.cssText=`width:${sz}px;height:${sz}px;left:${Math.random()*100}%;top:${Math.random()*100}%;--dur:${2+Math.random()*4}s;--delay:${Math.random()*4}s;--op:${.3+Math.random()*.6}`;
+    bg.appendChild(s);
   }
+}
 
-  grid.innerHTML=filtered.map((emp,idx)=>{
-    const xp=emp.xp||0;
-    const r=getRarity(xp);
-    const lvl=getLevel(xp);
-    const xpInfo=getXpToNext(xp);
-    const rank=idx+1;
-    const rankClass=rank<=3?`rank-${rank}`:'';
-    return`
-    <div class="emp-card ${r}" onclick="" style="position:relative">
-      <div class="card-border">
-        <div class="card-inner">
-          <div class="card-level">${lvl}</div>
-          <div class="card-rank ${rankClass}">${rank}</div>
-          <div class="card-photo-wrap">
-            ${emp.photo?`<img class="card-photo" src="${emp.photo}">`:`<div class="card-photo-placeholder">${getInitials(emp.name)}</div>`}
-          </div>
-          <div class="card-info">
-            <div class="card-name" title="${emp.name}">${emp.name}</div>
-            <div class="card-sector">${emp.sector||'Geral'} ${emp.role?'· '+emp.role:''}</div>
-            <div class="card-xp-wrap">
-              <div class="card-xp-label"><span class="xp-lbl">XP</span><span class="xp-val">${xp.toLocaleString('pt-BR')}</span></div>
-              <div class="card-xp-bar"><div class="card-xp-fill" style="width:${xpInfo.pct.toFixed(1)}%"></div></div>
-            </div>
-            <div class="card-rarity">${getRarityLabel(r)}</div>
-          </div>
-          <div class="card-actions">
-            <button class="card-action-btn xp" onclick="openXpModal('${emp.id}');event.stopPropagation()">⚡ Gerenciar XP</button>
-            <button class="card-action-btn edit" onclick="openEditModal('${emp.id}');event.stopPropagation()">✏ Editar Ficha</button>
-            <button class="card-action-btn delete" onclick="deleteEmployee('${emp.id}');event.stopPropagation()">🗑 Excluir</button>
-          </div>
+// ══ MONTH BADGE ══
+function initMonth(){
+  const now=new Date();
+  document.getElementById('month-pill').textContent=MONTHS[now.getMonth()]+' '+now.getFullYear();
+  document.getElementById('tv-month').textContent=MONTHS[now.getMonth()]+' '+now.getFullYear();
+}
+
+// ══ PAGES ══
+function goPage(p){
+  document.querySelectorAll('.page').forEach(el=>el.classList.remove('on'));
+  document.getElementById('pg-'+p).classList.add('on');
+  if(p==='admin')renderCards();
+  if(p==='hall')renderHall();
+}
+
+// ══ SECTOR TABS ══
+function renderTabs(){
+  const ss=sectors();
+  const el=document.getElementById('sector-tabs');
+  el.innerHTML=ss.map(s=>`<div class="stab ${s===activeSector?'on':''}" onclick="setSector('${s}')">${s}<span class="stab-count">${s==='TODOS'?emps.length:emps.filter(e=>e.sector===s).length}</span></div>`).join('');
+}
+function setSector(s){activeSector=s;renderTabs();renderCards()}
+
+// ══ RENDER CARDS ══
+function renderCards(){
+  renderTabs();
+  updateSidebar();
+  const q=(document.getElementById('search-q').value||'').toLowerCase();
+  const sort=document.getElementById('sort-sel').value;
+  let filtered=[...emps].filter(e=>{
+    if(activeSector!=='TODOS'&&e.sector!==activeSector)return false;
+    if(q&&!((e.name||'').toLowerCase().includes(q)||(e.sector||'').toLowerCase().includes(q)||(e.role||'').toLowerCase().includes(q)))return false;
+    return true;
+  });
+  if(sort==='xp')filtered.sort((a,b)=>(b.xp||0)-(a.xp||0));
+  else if(sort==='name')filtered.sort((a,b)=>(a.name||'').localeCompare(b.name||''));
+  else if(sort==='rarity'){const ro={lendario:0,epico:1,raro:2,comum:3};filtered.sort((a,b)=>ro[getRarity(b.xp||0)]-ro[getRarity(a.xp||0)]||(b.xp||0)-(a.xp||0))}
+
+  const area=document.getElementById('cards-area');
+
+  if(!filtered.length){area.innerHTML=`<div class="empty"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 10-16 0"/></svg><p>Nenhum funcionário encontrado.<br>Clique em <strong>+ Adicionar</strong> para começar.</p></div>`;return}
+
+  // Group by sector if TODOS, else single group
+  if(activeSector==='TODOS'&&!q&&sort==='xp'){
+    const sectorMap={};
+    filtered.forEach((e,i)=>{
+      const sc=e.sector||'Geral';
+      if(!sectorMap[sc])sectorMap[sc]=[];
+      sectorMap[sc].push({emp:e,rank:i+1});
+    });
+    area.innerHTML=Object.entries(sectorMap).map(([sc,items])=>`
+      <div class="sector-group">
+        <div class="sector-group-header">
+          <div class="sector-group-name">${sc}</div>
+          <div class="sector-group-count">${items.length} funcionário${items.length!==1?'s':''}</div>
+          ${items[0]?`<div class="sector-leader-badge">⭐ Líder: ${items[0].emp.name.split(' ')[0]}</div>`:''}
         </div>
+        <div class="cards-grid">${items.map(({emp,rank})=>cardHTML(emp,rank)).join('')}</div>
+      </div>`).join('');
+  } else {
+    area.innerHTML=`<div class="cards-grid">${filtered.map((e,i)=>cardHTML(e,i+1)).join('')}</div>`;
+  }
+}
+
+function cardHTML(emp,rank){
+  const xp=emp.xp||0;const r=getRarity(xp);const lvl=getLevel(xp);const pct=getXpPct(xp);
+  const rankCls=rank<=3?`r${rank}`:'';
+  const displayName=emp.nick||emp.name||'';
+  return`
+  <div class="ecard ${r}">
+    <div class="card-wrap">
+      <div class="card-top-badges">
+        <div class="badge-level">${lvl}</div>
+        <div class="badge-rank ${rankCls}">${rank}</div>
+      </div>
+      <div class="card-photo-box">
+        ${emp.photo?`<img src="${emp.photo}" loading="lazy">`:`<div class="no-photo">${initials(emp.name)}</div>`}
+      </div>
+      <div class="card-info">
+        <div class="card-name" title="${emp.name}">${displayName}</div>
+        <div class="card-meta">${emp.role||''}</div>
+        ${emp.sector?`<div class="card-sector-chip">${emp.sector}</div>`:''}
+        <div class="card-xp-row">
+          <div class="card-xp-num">${fmtXP(xp)}</div>
+          <div class="card-xp-lbl">XP</div>
+        </div>
+        <div class="card-xp-bar"><div class="card-xp-fill" style="width:${pct.toFixed(1)}%"></div></div>
+        <div class="card-rarity-lbl">${getRarityLabel(r)}</div>
+      </div>
+      <div class="card-actions">
+        <button class="cta xp" onclick="openXP('${emp.id}');event.stopPropagation()">⚡ Gerenciar XP</button>
+        <button class="cta prof" onclick="openProfile('${emp.id}');event.stopPropagation()">👤 Ver Ficha</button>
+        <button class="cta edit" onclick="openEdit('${emp.id}');event.stopPropagation()">✏ Editar</button>
+        <button class="cta del" onclick="delEmp('${emp.id}');event.stopPropagation()">🗑 Excluir</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function updateSidebar(){
+  const sorted=[...emps].sort((a,b)=>(b.xp||0)-(a.xp||0));
+  document.getElementById('s-total').textContent=emps.length;
+  document.getElementById('s-xp').textContent=fmtXP(emps.reduce((s,e)=>s+(e.xp||0),0));
+  document.getElementById('s-surveys').textContent=svStats.count||0;
+  document.getElementById('s-leader').textContent=sorted[0]?.nick||sorted[0]?.name?.split(' ')[0]||'—';
+}
+
+// ══ ADD / EDIT ══
+function openAdd(){
+  curEdit=null;
+  document.getElementById('m-emp-title').textContent='Novo Funcionário';
+  ['f-name','f-nick','f-role','f-sector','f-phone','f-email','f-note'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('f-xp').value='0';
+  document.getElementById('f-goal').value='';
+  document.getElementById('f-birth').value='';
+  document.getElementById('f-admit').value='';
+  clearPhoto();
+  updateDatalistsSectors();
+  openM('m-emp');
+}
+function openEdit(id){
+  const e=emps.find(x=>x.id===id);if(!e)return;
+  curEdit=id;
+  document.getElementById('m-emp-title').textContent='Editar Funcionário';
+  document.getElementById('f-name').value=e.name||'';
+  document.getElementById('f-nick').value=e.nick||'';
+  document.getElementById('f-role').value=e.role||'';
+  document.getElementById('f-sector').value=e.sector||'';
+  document.getElementById('f-phone').value=e.phone||'';
+  document.getElementById('f-email').value=e.email||'';
+  document.getElementById('f-note').value=e.note||'';
+  document.getElementById('f-xp').value=e.xp||0;
+  document.getElementById('f-goal').value=e.goal||'';
+  document.getElementById('f-birth').value=e.birth||'';
+  document.getElementById('f-admit').value=e.admit||'';
+  if(e.photo){const p=document.getElementById('photo-prev');p.src=e.photo;p.style.display='block';document.getElementById('photo-icon').style.display='none';document.getElementById('photo-txt').style.display='none';window._pd=e.photo}
+  else clearPhoto();
+  updateDatalistsSectors();
+  openM('m-emp');
+}
+function saveEmp(){
+  const name=document.getElementById('f-name').value.trim();
+  if(!name){toast('Digite o nome do funcionário','err');return}
+  const d={name,nick:document.getElementById('f-nick').value.trim(),role:document.getElementById('f-role').value.trim(),sector:document.getElementById('f-sector').value.trim(),phone:document.getElementById('f-phone').value.trim(),email:document.getElementById('f-email').value.trim(),note:document.getElementById('f-note').value.trim(),xp:parseInt(document.getElementById('f-xp').value)||0,goal:parseInt(document.getElementById('f-goal').value)||0,birth:document.getElementById('f-birth').value,admit:document.getElementById('f-admit').value,photo:window._pd||null};
+  if(curEdit){Object.assign(emps.find(e=>e.id===curEdit),d)}
+  else{emps.push({id:Date.now().toString()+Math.random().toString(36).slice(2),createdAt:new Date().toISOString(),...d})}
+  save();renderCards();closeM('m-emp');
+  toast(curEdit?'Funcionário atualizado!':'Funcionário adicionado! 🎉','ok');
+}
+function delEmp(id){
+  if(!confirm('Excluir este funcionário permanentemente?'))return;
+  emps=emps.filter(e=>e.id!==id);delete logs[id];
+  save();renderCards();toast('Funcionário removido','inf');
+}
+function handlePhoto(ev){
+  const f=ev.target.files[0];if(!f)return;
+  const r=new FileReader();r.onload=e=>{
+    window._pd=e.target.result;
+    const p=document.getElementById('photo-prev');p.src=e.target.result;p.style.display='block';
+    document.getElementById('photo-icon').style.display='none';document.getElementById('photo-txt').style.display='none';
+  };r.readAsDataURL(f);
+}
+function clearPhoto(){window._pd=null;const p=document.getElementById('photo-prev');p.src='';p.style.display='none';document.getElementById('photo-icon').style.display='';document.getElementById('photo-txt').style.display=''}
+function updateDatalistsSectors(){
+  const sc=[...new Set(emps.map(e=>e.sector).filter(Boolean))];
+  document.getElementById('dl-sectors').innerHTML=sc.map(s=>`<option value="${s}">`).join('');
+  const ro=[...new Set(emps.map(e=>e.role).filter(Boolean))];
+  document.getElementById('dl-roles').innerHTML=ro.map(r=>`<option value="${r}">`).join('');
+}
+
+// ══ XP ══
+function openXP(id){
+  const e=emps.find(x=>x.id===id);if(!e)return;
+  curXpId=id;
+  document.getElementById('xp-nm').textContent=e.name;
+  document.getElementById('xp-sc').textContent=(e.sector||'Geral')+(e.role?' · '+e.role:'');
+  document.getElementById('xp-ph').innerHTML=photoEl(e,50);
+  document.getElementById('xp-cur').textContent=fmtXP(e.xp||0);
+  document.getElementById('xp-adj').value='';
+  document.getElementById('xp-reason').value='';
+  renderLog(id);openM('m-xp');
+}
+function renderLog(id){
+  const ls=(logs[id]||[]).slice().reverse().slice(0,20);
+  const el=document.getElementById('xp-log');
+  if(!ls.length){el.innerHTML='<div style="text-align:center;padding:14px;color:var(--text3);font-size:11px">Nenhum registro</div>';return}
+  el.innerHTML=ls.map(l=>`<div class="log-item ${l.d>=0?'p':'n'}"><div><div style="color:var(--text);font-size:11px">${l.r}</div><div class="log-date">${new Date(l.t).toLocaleDateString('pt-BR')} ${new Date(l.t).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})}</div></div><div class="log-xp">${l.d>0?'+':''}${l.d}</div></div>`).join('');
+}
+function qxp(v){document.getElementById('xp-adj').value=v==='zero'?'__ZERO__':v}
+function applyXP(){
+  const e=emps.find(x=>x.id===curXpId);if(!e)return;
+  const r=document.getElementById('xp-reason').value.trim();
+  if(!r){toast('Informe o motivo','err');return}
+  const raw=document.getElementById('xp-adj').value;
+  let d,nxp;
+  if(raw==='__ZERO__'){d=-(e.xp||0);nxp=0}
+  else{d=parseInt(raw);if(isNaN(d)){toast('Valor inválido','err');return}nxp=Math.max(0,(e.xp||0)+d)}
+  e.xp=nxp;
+  if(!logs[curXpId])logs[curXpId]=[];
+  logs[curXpId].push({t:new Date().toISOString(),d,r,n:nxp});
+  save();renderCards();renderLog(curXpId);
+  document.getElementById('xp-cur').textContent=fmtXP(nxp);
+  document.getElementById('xp-adj').value='';
+  toast(`XP ${d>=0?'adicionado':'removido'}: ${Math.abs(d)} pts`,'ok');
+  if(d>0)popXP(`+${d} XP`);
+}
+
+// ══ PROFILE ══
+function openProfile(id){
+  const e=emps.find(x=>x.id===id);if(!e)return;
+  const xp=e.xp||0;const r=getRarity(xp);const lvl=getLevel(xp);
+  const empLogs=(logs[id]||[]);
+  const empHall=hall.filter(h=>h.empId===id);
+  const wins=empHall.length;
+  const pct=getXpPct(xp);
+  const fmtDate=d=>{if(!d)return'—';try{return new Date(d).toLocaleDateString('pt-BR')}catch{return d}};
+
+  document.getElementById('profile-content').innerHTML=`
+  <div class="profile-photo-side">
+    <div class="profile-photo-frame">${e.photo?`<img src="${e.photo}">`:`<div class="no-photo">${initials(e.name)}</div>`}</div>
+    <div class="profile-name">${e.nick||e.name}</div>
+    ${e.name!==e.nick&&e.nick?`<div style="font-size:12px;color:var(--text3)">${e.name}</div>`:''}
+    <div class="profile-role">${e.role||'Sem cargo'}</div>
+    ${e.sector?`<div class="profile-sector-badge">${e.sector}</div>`:''}
+    <div class="profile-xp-block">
+      <div class="profile-xp-num">${fmtXP(xp)}</div>
+      <div class="profile-xp-lbl">XP Total do Mês</div>
+      <div style="height:6px;background:rgba(255,255,255,.07);border-radius:3px;overflow:hidden;margin-top:8px">
+        <div style="height:100%;width:${pct.toFixed(1)}%;border-radius:3px;background:linear-gradient(90deg,var(--purple),var(--purple2))"></div>
+      </div>
+    </div>
+    <div class="rarity-badge-big ${r}">${getRarityLabel(r)}</div>
+    <div style="text-align:center"><div style="font-family:var(--font-d);font-size:28px;font-weight:700">Nível ${lvl}</div><div style="font-size:10px;color:var(--text3)">Nível de experiência</div></div>
+    ${wins>0?`<div style="text-align:center"><div style="font-size:24px">🏆</div><div style="font-family:var(--font-d);font-size:20px;font-weight:700;color:var(--gold)">${wins}x Vencedor</div></div>`:''}
+  </div>
+  <div>
+    <div class="form-section" style="margin-top:0">Informações Pessoais</div>
+    <div class="profile-info-grid">
+      <div class="pinfo-item"><div class="pinfo-lbl">📱 Telefone</div><div class="pinfo-val ${!e.phone?'empty':''}">${e.phone||'Não informado'}</div></div>
+      <div class="pinfo-item"><div class="pinfo-lbl">📧 E-mail</div><div class="pinfo-val ${!e.email?'empty':''}">${e.email||'Não informado'}</div></div>
+      <div class="pinfo-item"><div class="pinfo-lbl">🎂 Aniversário</div><div class="pinfo-val ${!e.birth?'empty':''}">${fmtDate(e.birth)}</div></div>
+      <div class="pinfo-item"><div class="pinfo-lbl">📅 Data de admissão</div><div class="pinfo-val ${!e.admit?'empty':''}">${fmtDate(e.admit)}</div></div>
+      <div class="pinfo-item"><div class="pinfo-lbl">🎯 Meta mensal</div><div class="pinfo-val ${!e.goal?'empty':''}">${e.goal?fmtXP(e.goal)+' XP':'Não definida'}</div></div>
+      <div class="pinfo-item"><div class="pinfo-lbl">📊 Progresso da meta</div><div class="pinfo-val">${e.goal?Math.min(100,Math.round((xp/e.goal)*100))+'%':'—'}</div></div>
+    </div>
+    ${e.note?`<div class="pinfo-item" style="margin-top:8px"><div class="pinfo-lbl">📝 Observação</div><div class="pinfo-val">${e.note}</div></div>`:''}
+
+    <div class="form-section">Histórico de XP — Últimas Entradas</div>
+    <div class="log-list">${empLogs.length?empLogs.slice().reverse().slice(0,10).map(l=>`<div class="log-item ${l.d>=0?'p':'n'}"><div><div style="color:var(--text);font-size:11px">${l.r}</div><div class="log-date">${new Date(l.t).toLocaleDateString('pt-BR')}</div></div><div class="log-xp">${l.d>0?'+':''}${l.d}</div></div>`).join(''):'<div style="text-align:center;padding:12px;color:var(--text3);font-size:11px">Nenhum registro ainda</div>'}</div>
+
+    ${empHall.length?`<div class="form-section">Meses Vencidos 🏆</div><div class="profile-history">${empHall.map(h=>`<div class="hist-item"><div class="hist-trophy">🏆</div><div class="hist-month">${MONTHS[h.month]} ${h.year}</div>${h.prize?`<div style="font-size:11px;color:var(--text3)">${h.prize}</div>`:''}<div class="hist-xp">${fmtXP(h.xp)} XP</div></div>`).join('')}</div>`:''}
+
+    <div class="fact" style="margin-top:16px">
+      <button class="btn-cancel" onclick="closeM('m-profile');openXP('${id}')">⚡ Gerenciar XP</button>
+      <button class="btn-save" onclick="closeM('m-profile');openEdit('${id}')">✏ Editar Ficha</button>
+    </div>
+  </div>`;
+  openM('m-profile');
+}
+
+// ══ HALL DA FAMA ══
+function renderHall(){
+  const el=document.getElementById('hall-grid');
+  if(!hall.length){el.innerHTML=`<div class="hall-empty"><div class="hall-empty-icon">🏆</div><p>Nenhum vencedor registrado ainda.<br>Registre o primeiro Funcionário do Mês!</p></div>`;return}
+  const sorted=[...hall].sort((a,b)=>b.year-a.year||b.month-a.month);
+  el.innerHTML=sorted.map(h=>{
+    const e=emps.find(x=>x.id===h.empId)||{name:h.empName||'Desconhecido'};
+    const wins=hall.filter(x=>x.empId===h.empId).length;
+    return`<div class="hall-card">
+      <div class="hall-card-photo">
+        ${e.photo?`<img src="${e.photo}">`:`<div class="no-photo">${initials(e.name)}</div>`}
+      </div>
+      <div class="hall-card-info">
+        <div class="hall-card-trophy">🏆</div>
+        <div class="hall-card-name">${e.nick||e.name}</div>
+        <div class="hall-card-month">${MONTHS[h.month]} ${h.year}</div>
+        <div class="hall-card-xp">${fmtXP(h.xp)}<span style="font-size:11px;color:var(--text3)"> XP</span></div>
+        ${h.prize?`<div style="font-size:10px;color:var(--text3);margin-top:3px">🎁 ${h.prize}</div>`:''}
+        ${wins>1?`<div class="hall-card-wins">🏆 ${wins}x campeão</div>`:''}
       </div>
     </div>`;
   }).join('');
-
-  updateStats(filtered);
-  updateFilters();
+}
+function openHallReg(){
+  const now=new Date();
+  document.getElementById('hall-month').value=now.getMonth();
+  document.getElementById('hall-year').value=now.getFullYear();
+  document.getElementById('hall-prize').value='';
+  hallSelId=null;
+  const wg=document.getElementById('winner-grid');
+  const sorted=[...emps].sort((a,b)=>(b.xp||0)-(a.xp||0));
+  wg.innerHTML=sorted.map(e=>`<div class="winner-emp" data-id="${e.id}" onclick="selWinner('${e.id}')"><div class="winner-emp-photo">${e.photo?`<img src="${e.photo}">`:`${initials(e.name)}`}</div><div class="winner-emp-name">${e.nick||e.name.split(' ')[0]}</div></div>`).join('');
+  openM('m-hallreg');
+}
+function selWinner(id){hallSelId=id;document.querySelectorAll('.winner-emp').forEach(el=>el.classList.toggle('sel',el.dataset.id===id))}
+function saveHall(){
+  if(!hallSelId){toast('Selecione o vencedor','err');return}
+  const e=emps.find(x=>x.id===hallSelId);if(!e)return;
+  const month=parseInt(document.getElementById('hall-month').value);
+  const year=parseInt(document.getElementById('hall-year').value);
+  const prize=document.getElementById('hall-prize').value.trim();
+  if(hall.find(h=>h.month===month&&h.year===year)){if(!confirm(`Já existe um vencedor em ${MONTHS[month]} ${year}. Substituir?`))return;hall=hall.filter(h=>!(h.month===month&&h.year===year))}
+  hall.push({id:Date.now().toString(),empId:hallSelId,empName:e.name,month,year,xp:e.xp||0,prize,registeredAt:new Date().toISOString()});
+  save();closeM('m-hallreg');renderHall();
+  toast(`🏆 ${e.nick||e.name} registrado como Funcionário do Mês!`,'ok');
 }
 
-function updateStats(sorted){
-  const total=employees.length;
-  const totalXp=employees.reduce((s,e)=>s+(e.xp||0),0);
-  const surveys=surveyStats.count||0;
-  const leader=sorted[0]?.name||'—';
-  document.getElementById('stat-total-emp').textContent=total;
-  document.getElementById('stat-total-xp').textContent=totalXp.toLocaleString('pt-BR');
-  document.getElementById('stat-surveys').textContent=surveys;
-  document.getElementById('stat-leader').textContent=leader.split(' ')[0];
+// ══ RESET ══
+function openResetModal(){document.getElementById('reset-inp').value='';openM('m-reset')}
+function doReset(){
+  if(document.getElementById('reset-inp').value!=='RESETAR'){toast('Digite RESETAR para confirmar','err');return}
+  emps.forEach(e=>{if(!logs[e.id])logs[e.id]=[];logs[e.id].push({t:new Date().toISOString(),d:-(e.xp||0),r:'Reset total de XP',n:0});e.xp=0});
+  save();renderCards();closeM('m-reset');toast('XP de todos os funcionários resetado','inf');
 }
 
-function updateFilters(){
-  const sectors=[...new Set(employees.map(e=>e.sector).filter(Boolean))];
-  const sel=document.getElementById('filter-sector');
-  const cur=sel.value;
-  sel.innerHTML='<option value="">Todos os setores</option>'+sectors.map(s=>`<option value="${s}" ${s===cur?'selected':''}>${s}</option>`).join('');
-  const dd=document.getElementById('sectors-datalist');
-  if(dd)dd.innerHTML=sectors.map(s=>`<option value="${s}">`).join('');
+// ══ EXPORT / IMPORT ══
+function exportData(){
+  const data={emps,logs,hall,svStats,v:2,exported:new Date().toISOString()};
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`lider-${new Date().toLocaleDateString('pt-BR').replace(/\//g,'-')}.json`;a.click();
+  toast('Dados exportados!','ok');
+}
+function handleImport(ev){
+  const f=ev.target.files[0];if(!f)return;
+  const r=new FileReader();r.onload=e=>{
+    try{const d=JSON.parse(e.target.result);
+      if(d.emps)emps=d.emps;if(d.logs)logs=d.logs;if(d.hall)hall=d.hall;if(d.svStats)svStats=d.svStats;
+      save();renderCards();renderHall();toast(`${emps.length} funcionários importados!`,'ok');
+    }catch{toast('Arquivo inválido','err')}
+  };r.readAsText(f);ev.target.value='';
 }
 
-// ===== ADD/EDIT MODAL =====
-function openAddModal(){
-  currentEditId=null;
-  document.getElementById('modal-emp-title').textContent='Novo Funcionário';
-  document.getElementById('emp-name').value='';
-  document.getElementById('emp-role').value='';
-  document.getElementById('emp-sector').value='';
-  document.getElementById('emp-xp').value='0';
-  document.getElementById('emp-note').value='';
-  document.getElementById('photo-preview').style.display='none';
-  document.getElementById('photo-preview').src='';
-  document.querySelector('#photo-upload-area .photo-upload-text').style.display='';
-  document.querySelector('#photo-upload-area svg').style.display='';
-  window._photoData=null;
-  openModal('modal-employee');
-}
-function openEditModal(id){
-  const emp=employees.find(e=>e.id===id);if(!emp)return;
-  currentEditId=id;
-  document.getElementById('modal-emp-title').textContent='Editar Funcionário';
-  document.getElementById('emp-name').value=emp.name;
-  document.getElementById('emp-role').value=emp.role||'';
-  document.getElementById('emp-sector').value=emp.sector||'';
-  document.getElementById('emp-xp').value=emp.xp||0;
-  document.getElementById('emp-note').value=emp.note||'';
-  if(emp.photo){
-    const prev=document.getElementById('photo-preview');
-    prev.src=emp.photo;prev.style.display='block';
-    document.querySelector('#photo-upload-area .photo-upload-text').style.display='none';
-    document.querySelector('#photo-upload-area svg').style.display='none';
-    window._photoData=emp.photo;
-  } else {
-    document.getElementById('photo-preview').style.display='none';
-    document.querySelector('#photo-upload-area .photo-upload-text').style.display='';
-    document.querySelector('#photo-upload-area svg').style.display='';
-    window._photoData=null;
-  }
-  openModal('modal-employee');
-}
-function handlePhotoUpload(e){
-  const file=e.target.files[0];if(!file)return;
-  const reader=new FileReader();
-  reader.onload=ev=>{
-    window._photoData=ev.target.result;
-    const prev=document.getElementById('photo-preview');
-    prev.src=ev.target.result;prev.style.display='block';
-    document.querySelector('#photo-upload-area .photo-upload-text').style.display='none';
-    document.querySelector('#photo-upload-area svg').style.display='none';
-  };reader.readAsDataURL(file);
-}
-function saveEmployee(){
-  const name=document.getElementById('emp-name').value.trim();
-  if(!name){showToast('Digite o nome do funcionário','error');return;}
-  if(currentEditId){
-    const emp=employees.find(e=>e.id===currentEditId);
-    emp.name=name;emp.role=document.getElementById('emp-role').value.trim();
-    emp.sector=document.getElementById('emp-sector').value.trim();
-    emp.xp=parseInt(document.getElementById('emp-xp').value)||emp.xp||0;
-    emp.note=document.getElementById('emp-note').value.trim();
-    if(window._photoData)emp.photo=window._photoData;
-  } else {
-    employees.push({id:Date.now().toString(),name,role:document.getElementById('emp-role').value.trim(),sector:document.getElementById('emp-sector').value.trim(),xp:parseInt(document.getElementById('emp-xp').value)||0,note:document.getElementById('emp-note').value.trim(),photo:window._photoData||null,createdAt:new Date().toISOString()});
-  }
-  save();renderCards();closeModal('modal-employee');
-  showToast(currentEditId?'Funcionário atualizado!':'Funcionário adicionado! 🎉','success');
-}
-function deleteEmployee(id){
-  if(!confirm('Excluir este funcionário?'))return;
-  employees=employees.filter(e=>e.id!==id);
-  delete xpLogs[id];
-  save();renderCards();
-  showToast('Funcionário removido','info');
-}
-
-// ===== XP MODAL =====
-function openXpModal(id){
-  const emp=employees.find(e=>e.id===id);if(!emp)return;
-  currentXpId=id;
-  document.getElementById('xp-emp-name').textContent=emp.name;
-  document.getElementById('xp-emp-sector').textContent=(emp.sector||'Geral')+(emp.role?' · '+emp.role:'');
-  const photoEl=document.getElementById('xp-emp-photo');
-  photoEl.innerHTML=emp.photo?`<img src="${emp.photo}" style="width:52px;height:52px;object-fit:cover">`:`<div style="width:52px;height:52px;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:18px;font-weight:700;color:rgba(255,255,255,0.2);background:rgba(155,92,246,0.15)">${getInitials(emp.name)}</div>`;
-  document.getElementById('xp-current-val').textContent=(emp.xp||0).toLocaleString('pt-BR');
-  document.getElementById('xp-adjust-val').value='';
-  document.getElementById('xp-reason').value='';
-  renderXpLog(id);
-  openModal('modal-xp');
-}
-function renderXpLog(id){
-  const logs=(xpLogs[id]||[]).slice().reverse().slice(0,20);
-  const el=document.getElementById('xp-log-entries');
-  if(!logs.length){el.innerHTML='<div style="text-align:center;padding:16px;color:var(--text-muted);font-size:12px">Nenhum registro ainda</div>';return;}
-  el.innerHTML=logs.map(l=>`
-    <div class="log-entry ${l.delta>=0?'pos':'neg'}">
-      <div>
-        <div style="font-size:12px;color:var(--text-primary)">${l.reason}</div>
-        <div class="log-date">${new Date(l.date).toLocaleDateString('pt-BR')} ${new Date(l.date).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})}</div>
-      </div>
-      <div class="log-xp">${l.delta>0?'+':''}${l.delta}</div>
-    </div>`).join('');
-}
-function setXpQuick(val){
-  if(val===0){document.getElementById('xp-adjust-val').value='__ZERO__';}
-  else document.getElementById('xp-adjust-val').value=val;
-}
-function applyXpChange(){
-  const emp=employees.find(e=>e.id===currentXpId);if(!emp)return;
-  const rawVal=document.getElementById('xp-adjust-val').value;
-  const reason=document.getElementById('xp-reason').value.trim();
-  if(!reason){showToast('Informe o motivo da alteração','error');return;}
-  let newXp;let delta;
-  if(rawVal==='__ZERO__'){delta=-(emp.xp||0);newXp=0;}
-  else{delta=parseInt(rawVal);if(isNaN(delta)){showToast('Valor inválido','error');return;}newXp=Math.max(0,(emp.xp||0)+delta);}
-  emp.xp=newXp;
-  if(!xpLogs[currentXpId])xpLogs[currentXpId]=[];
-  xpLogs[currentXpId].push({date:new Date().toISOString(),delta,reason,newTotal:newXp});
-  save();renderCards();renderXpLog(currentXpId);
-  document.getElementById('xp-current-val').textContent=newXp.toLocaleString('pt-BR');
-  document.getElementById('xp-adjust-val').value='';
-  showToast(`XP ${delta>=0?'adicionado':'removido'}: ${Math.abs(delta)} pts`,'success');
-  if(delta>0)spawnXpNotif(`+${delta} XP`);
-}
-
-// ===== RESET =====
-function confirmResetAll(){openModal('modal-reset');document.getElementById('reset-confirm-input').value=''}
-function executeReset(){
-  if(document.getElementById('reset-confirm-input').value!=='RESETAR'){showToast('Digite RESETAR para confirmar','error');return;}
-  employees.forEach(e=>{
-    if(!xpLogs[e.id])xpLogs[e.id]=[];
-    xpLogs[e.id].push({date:new Date().toISOString(),delta:-(e.xp||0),reason:'Reset total de XP',newTotal:0});
-    e.xp=0;
-  });
-  save();renderCards();closeModal('modal-reset');
-  showToast('XP de todos os funcionários resetado','info');
-}
-
-// ===== SURVEY =====
-function renderSurveyGrid(){
-  const sorted=[...employees].sort((a,b)=>a.name.localeCompare(b.name));
-  document.getElementById('survey-emp-grid').innerHTML=sorted.map(emp=>`
-    <div class="survey-emp-btn" data-id="${emp.id}" onclick="selectSurveyEmp('${emp.id}')">
-      <div class="survey-emp-photo">${emp.photo?`<img src="${emp.photo}">`:`${getInitials(emp.name)}`}</div>
-      <div class="survey-emp-name">${emp.name.split(' ')[0]}</div>
-      <div class="survey-emp-sector">${emp.sector||''}</div>
-    </div>`).join('');
-}
-function selectSurveyEmp(id){
-  selectedSurveyEmp=id;
-  document.querySelectorAll('.survey-emp-btn').forEach(b=>b.classList.remove('selected'));
-  document.querySelector(`[data-id="${id}"]`)?.classList.add('selected');
-  document.getElementById('btn-survey-next').disabled=false;
-}
-function surveyNextStep(){
-  if(!selectedSurveyEmp)return;
-  const emp=employees.find(e=>e.id===selectedSurveyEmp);if(!emp)return;
-  const info=document.getElementById('survey-selected-info');
-  info.innerHTML=`<div class="survey-selected-photo">${emp.photo?`<img src="${emp.photo}">`:`${getInitials(emp.name)}`}</div><div><div class="survey-selected-name">${emp.name}</div><div class="survey-selected-sector">${emp.sector||''}</div></div>`;
-  selectedStar=0;
-  document.querySelectorAll('.star').forEach(s=>s.classList.remove('active'));
-  document.getElementById('btn-survey-submit').disabled=true;
-  document.getElementById('survey-comment').value='';
-  document.getElementById('survey-step-1').classList.remove('active');
-  document.getElementById('survey-step-2').classList.add('active');
-}
-function surveyBack(){
-  document.getElementById('survey-step-2').classList.remove('active');
-  document.getElementById('survey-step-1').classList.add('active');
-}
-function selectStar(val){
-  selectedStar=val;
-  document.querySelectorAll('.star').forEach((s,i)=>s.classList.toggle('active',i<val));
-  document.getElementById('btn-survey-submit').disabled=false;
-}
-function submitSurvey(){
-  if(!selectedStar||!selectedSurveyEmp)return;
-  const emp=employees.find(e=>e.id===selectedSurveyEmp);if(!emp)return;
-  const xpGained=XP_PER_STAR[selectedStar];
-  emp.xp=(emp.xp||0)+xpGained;
-  if(!xpLogs[emp.id])xpLogs[emp.id]=[];
-  const comment=document.getElementById('survey-comment').value.trim();
-  xpLogs[emp.id].push({date:new Date().toISOString(),delta:xpGained,reason:`Pesquisa de satisfação: ${selectedStar}★${comment?' – "'+comment+'"':''}`,newTotal:emp.xp});
-  surveyStats.count=(surveyStats.count||0)+1;
-  save();renderCards();
-  document.getElementById('survey-step-2').classList.remove('active');
-  document.getElementById('survey-step-3').classList.add('active');
-}
-function resetSurvey(){
-  selectedSurveyEmp=null;selectedStar=0;
-  document.querySelectorAll('.survey-step').forEach((s,i)=>{s.classList.toggle('active',i===0)});
-  document.getElementById('btn-survey-next').disabled=true;
-  document.querySelectorAll('.survey-emp-btn').forEach(b=>b.classList.remove('selected'));
-  renderSurveyGrid();
-}
-
-// ===== TV MODE =====
+// ══ TV ══
 function enterTV(){
-  document.getElementById('view-tv').classList.add('active');
-  document.getElementById('tv-month-label').textContent=MONTHS[new Date().getMonth()]+' '+new Date().getFullYear();
-  renderTV();
-  document.addEventListener('keydown',tvKeyHandler);
-  if(document.documentElement.requestFullscreen)document.documentElement.requestFullscreen().catch(()=>{});
+  document.querySelectorAll('.page').forEach(el=>el.classList.remove('on'));
+  document.getElementById('pg-tv').classList.add('on');
+  renderTV();generateQR();
+  document.addEventListener('keydown',tvKey);
+  document.documentElement.requestFullscreen?.().catch(()=>{});
 }
 function exitTV(){
-  document.getElementById('view-tv').classList.remove('active');
-  document.removeEventListener('keydown',tvKeyHandler);
-  if(document.exitFullscreen)document.exitFullscreen().catch(()=>{});
+  document.getElementById('pg-tv').classList.remove('on');
+  document.getElementById('pg-admin').classList.add('on');
+  document.removeEventListener('keydown',tvKey);
+  document.exitFullscreen?.().catch(()=>{});
 }
-function tvKeyHandler(e){if(e.key==='Escape')exitTV();}
-
+function tvKey(e){if(e.key==='Escape')exitTV()}
 function renderTV(){
-  const sorted=[...employees].sort((a,b)=>(b.xp||0)-(a.xp||0));
+  const sorted=[...emps].sort((a,b)=>(b.xp||0)-(a.xp||0));
   const maxXp=sorted[0]?.xp||1;
-  const content=document.getElementById('tv-content');
-
-  if(sorted.length===0){content.innerHTML='<p style="color:var(--text-muted);font-family:var(--font-display);font-size:24px">Nenhum funcionário cadastrado</p>';return;}
+  const area=document.getElementById('tv-rank-area');
+  if(sorted.length===0){area.innerHTML='<p style="color:var(--text3);font-family:var(--font-d);font-size:22px">Nenhum funcionário cadastrado</p>';return}
 
   if(sorted.length<=5){
-    // Podium mode
     const top3=sorted.slice(0,3);
-    content.innerHTML=`<div class="tv-podium">
-      ${top3.map((emp,idx)=>{
-        const rank=idx+1;const xp=emp.xp||0;const r=getRarity(xp);
-        const rankEmoji=['🥇','🥈','🥉'][idx];
-        return`<div class="podium-slot ${['first','second','third'][idx]}">
-          <div class="tv-card ${idx===0?'large':''}">
-            <div style="border-radius:12px;overflow:hidden;border:2px solid ${r==='lendario'?'var(--legendary-gold)':r==='epico'?'var(--purple)':r==='raro'?'var(--gold)':'rgba(255,255,255,0.15)'}">
-              <div style="position:relative">
-                ${emp.photo?`<img src="${emp.photo}" style="width:100%;aspect-ratio:1;object-fit:cover;display:block">`:`<div style="width:100%;aspect-ratio:1;display:flex;align-items:center;justify-content:center;background:rgba(155,92,246,0.1);font-family:var(--font-display);font-size:${idx===0?'72':'56'}px;font-weight:700;color:rgba(255,255,255,0.15)">${getInitials(emp.name)}</div>`}
-                <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.9) 0%,transparent 50%);display:flex;flex-direction:column;justify-content:flex-end;padding:12px">
-                  <div style="font-family:var(--font-display);font-size:${idx===0?'22':'17'}px;font-weight:700">${emp.name}</div>
-                  <div style="font-size:11px;color:var(--text-muted)">${emp.sector||''}</div>
-                  <div style="font-family:var(--font-display);font-size:${idx===0?'28':'22'}px;font-weight:700;color:var(--gold);margin-top:4px">${xp.toLocaleString('pt-BR')} <span style="font-size:12px;color:var(--text-muted)">XP</span></div>
-                </div>
-              </div>
-            </div>
+    area.innerHTML=`<div class="tv-podium">${top3.map((e,i)=>{
+      const xp=e.xp||0;const sz=['72','56','48'][i];
+      return`<div class="pdm-slot p${i+1}">
+        <div class="pdm-card" style="position:relative">
+          <div class="pdm-card-photo" style="font-size:${sz}px">
+            ${e.photo?`<img src="${e.photo}">`:`<div class="ini">${initials(e.name)}</div>`}
           </div>
-          <div class="podium-base b${rank}">${rankEmoji}</div>
-        </div>`;
-      }).join('')}
-    </div>`;
+          <div class="pdm-card-info">
+            <div class="pdm-name">${e.nick||e.name}</div>
+            <div class="pdm-xp">${fmtXP(xp)} XP</div>
+          </div>
+        </div>
+        <div class="pdm-base">${['🥇','🥈','🥉'][i]}</div>
+      </div>`;
+    }).join('')}</div>`;
   } else {
-    // Ranking list mode
-    content.innerHTML=`<div class="tv-ranking">
-      ${sorted.slice(0,10).map((emp,idx)=>{
-        const rank=idx+1;const xp=emp.xp||0;
-        const rankColor=rank===1?'var(--gold)':rank===2?'#adb5c0':rank===3?'#cd7f32':'var(--text-muted)';
-        return`<div class="tv-rank-row" style="animation-delay:${idx*0.06}s">
-          <div class="tv-rank-num" style="color:${rankColor}">${rank}</div>
-          <div class="tv-rank-photo">${emp.photo?`<img src="${emp.photo}">`:`<div class="initials">${getInitials(emp.name)}</div>`}</div>
-          <div class="tv-rank-info">
-            <div class="tv-rank-name">${emp.name}</div>
-            <div class="tv-rank-sector">${emp.sector||''} ${emp.role?'· '+emp.role:''}</div>
-          </div>
-          <div>
-            <div class="tv-rank-xp">${xp.toLocaleString('pt-BR')}</div>
-            <div class="tv-rank-xplab">pontos XP</div>
-            <div class="tv-rank-bar-wrap">
-              <div class="tv-rank-bar"><div class="tv-rank-bar-fill" style="width:${((xp/maxXp)*100).toFixed(1)}%"></div></div>
-            </div>
-          </div>
-        </div>`;
-      }).join('')}
-    </div>`;
+    area.innerHTML=`<div class="tv-ranking">${sorted.slice(0,12).map((e,i)=>{
+      const xp=e.xp||0;const rank=i+1;
+      const rc=rank===1?'var(--gold)':rank===2?'#adb5c0':rank===3?'#cd7f32':'var(--text3)';
+      return`<div class="tv-row" style="animation-delay:${i*.05}s">
+        <div class="tv-rank-n" style="color:${rc}">${rank}</div>
+        <div class="tv-rank-photo">${e.photo?`<img src="${e.photo}">`:`<div class="ini">${initials(e.name)}</div>`}</div>
+        <div class="tv-rank-info"><div class="tv-rank-name">${e.nick||e.name}</div><div class="tv-rank-sector">${e.sector||''}</div></div>
+        <div><div class="tv-rank-xp">${fmtXP(xp)}</div><div class="tv-rank-xplbl">pontos XP</div></div>
+        <div class="tv-bar-wrap"><div class="tv-bar"><div class="tv-bar-fill" style="width:${((xp/maxXp)*100).toFixed(1)}%"></div></div></div>
+      </div>`;
+    }).join('')}</div>`;
   }
 
   // Ticker
-  const ticker=document.getElementById('ticker-inner');
-  const tickerContent=sorted.map(e=>`<span class="ticker-item">${e.name}<span>${(e.xp||0).toLocaleString('pt-BR')} XP</span></span>`).join('');
-  ticker.innerHTML=tickerContent+tickerContent; // duplicate for seamless loop
+  const t=document.getElementById('tv-ticker');
+  const tc=sorted.map(e=>`<span class="ticker-item">${e.nick||e.name.split(' ')[0]}<span>${fmtXP(e.xp||0)} XP</span></span>`).join('');
+  t.innerHTML=tc+tc;
+}
+function generateQR(){
+  const el=document.getElementById('tv-qr');
+  el.innerHTML='';
+  try{
+    new QRCode(el,{text:getSurveyURL(),width:150,height:150,colorDark:'#000',colorLight:'#fff',correctLevel:QRCode.CorrectLevel.M});
+  }catch(err){el.innerHTML='<div style="font-size:10px;color:#333;padding:10px;text-align:center">QR Code<br>disponível</div>'}
 }
 
-// ===== VIEWS =====
-function showView(name){
-  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
-  document.getElementById('view-'+name).classList.add('active');
-  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
-  if(name==='admin')renderCards();
-  if(name==='survey')renderSurveyGrid();
+// ══ SURVEY ══
+function initSurvey(){
+  const sorted=[...emps].sort((a,b)=>(a.name||'').localeCompare(b.name||''));
+  document.getElementById('sv-grid').innerHTML=sorted.map(e=>`
+    <div class="sv-emp" data-id="${e.id}" onclick="svSelEmp('${e.id}')">
+      <div class="sv-emp-photo">${e.photo?`<img src="${e.photo}">`:`${initials(e.name)}`}</div>
+      <div class="sv-emp-name">${e.nick||e.name.split(' ')[0]}</div>
+      <div class="sv-emp-sector">${e.sector||''}</div>
+    </div>`).join('');
+}
+function svSelEmp(id){
+  svEmpId=id;svStar=0;
+  document.querySelectorAll('.sv-emp').forEach(el=>el.classList.toggle('sel',el.dataset.id===id));
+  document.getElementById('btn-sv-next').disabled=false;
+}
+function svNext(){
+  if(!svEmpId)return;
+  const e=emps.find(x=>x.id===svEmpId);if(!e)return;
+  document.getElementById('sv-selected-box').innerHTML=`<div class="sv-sel-photo">${e.photo?`<img src="${e.photo}">`:`${initials(e.name)}`}</div><div><div class="sv-sel-name">${e.nick||e.name}</div><div class="sv-sel-sector">${e.sector||''}</div></div>`;
+  svStar=0;document.querySelectorAll('.star').forEach(s=>s.classList.remove('on'));
+  document.getElementById('btn-sv-sub').disabled=true;document.getElementById('sv-comment').value='';
+  ['sv1','sv2'].forEach((id,i)=>document.getElementById(id).classList.toggle('on',i===1));
+}
+function svBack(){['sv1','sv2'].forEach((id,i)=>document.getElementById(id).classList.toggle('on',i===0))}
+function pickStar(v){svStar=v;document.querySelectorAll('.star').forEach((s,i)=>s.classList.toggle('on',i<v));document.getElementById('btn-sv-sub').disabled=false}
+function svSubmit(){
+  if(!svStar||!svEmpId)return;
+  const e=emps.find(x=>x.id===svEmpId);if(!e)return;
+  const xpG=XP_STAR[svStar];const comment=document.getElementById('sv-comment').value.trim();
+  e.xp=(e.xp||0)+xpG;
+  if(!logs[e.id])logs[e.id]=[];
+  logs[e.id].push({t:new Date().toISOString(),d:xpG,r:`Pesquisa de satisfação: ${svStar}★${comment?' — "'+comment+'"':''}`,n:e.xp});
+  svStats.count=(svStats.count||0)+1;
+  save();
+  document.getElementById('sv-xp-award').textContent=`+${xpG} XP atribuído a ${e.nick||e.name.split(' ')[0]}!`;
+  ['sv1','sv2','sv3'].forEach((id,i)=>document.getElementById(id).classList.toggle('on',i===2));
+}
+function svReset(){
+  svEmpId=null;svStar=0;
+  document.querySelectorAll('.sv-emp').forEach(el=>el.classList.remove('sel'));
+  document.getElementById('btn-sv-next').disabled=true;
+  ['sv1','sv2','sv3'].forEach((id,i)=>document.getElementById(id).classList.toggle('on',i===0));
 }
 
-// ===== MODALS =====
-function openModal(id){document.getElementById(id).classList.remove('hidden')}
-function closeModal(id){document.getElementById(id).classList.add('hidden')}
-document.querySelectorAll('.modal-overlay').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.classList.add('hidden')}));
+// ══ MODALS ══
+function openM(id){document.getElementById(id).classList.remove('h')}
+function closeM(id){document.getElementById(id).classList.add('h')}
+document.querySelectorAll('.overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.classList.add('h')}));
 
-// ===== EXPORT/IMPORT =====
-function exportData(){
-  const data={employees,xpLogs,surveyStats,exportDate:new Date().toISOString()};
-  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
-  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
-  a.download=`lider-corretora-${new Date().toLocaleDateString('pt-BR').replace(/\//g,'-')}.json`;
-  a.click();showToast('Dados exportados com sucesso!','success');
+// ══ TOAST ══
+function toast(msg,type='inf'){
+  const t=document.createElement('div');t.className=`toast ${type}`;t.textContent=msg;
+  document.body.appendChild(t);setTimeout(()=>t.remove(),3200);
 }
-function importData(){document.getElementById('import-input').click()}
-function handleImport(e){
-  const file=e.target.files[0];if(!file)return;
-  const reader=new FileReader();
-  reader.onload=ev=>{
-    try{
-      const data=JSON.parse(ev.target.result);
-      if(data.employees)employees=data.employees;
-      if(data.xpLogs)xpLogs=data.xpLogs;
-      if(data.surveyStats)surveyStats=data.surveyStats;
-      save();renderCards();
-      showToast(`${employees.length} funcionários importados!`,'success');
-    }catch(err){showToast('Arquivo inválido','error');}
-  };reader.readAsText(file);
-  e.target.value='';
+function popXP(txt){
+  const el=document.createElement('div');el.className='xp-pop';el.textContent=txt;
+  el.style.cssText=`left:${100+Math.random()*200}px;top:${150+Math.random()*100}px`;
+  document.body.appendChild(el);setTimeout(()=>el.remove(),1400);
 }
 
-// ===== UI HELPERS =====
-function showToast(msg,type='info'){
-  const t=document.createElement('div');
-  t.className=`notif-toast ${type}`;t.textContent=msg;
-  document.body.appendChild(t);
-  setTimeout(()=>t.remove(),3200);
-}
-function spawnXpNotif(text){
-  const el=document.createElement('div');
-  el.className='xp-notif';el.textContent=text;
-  el.style.cssText=`left:${Math.random()*200+100}px;top:${Math.random()*100+200}px;`;
-  document.body.appendChild(el);
-  setTimeout(()=>el.remove(),1300);
-}
-
-// ===== MONTH BADGE =====
-function setMonthBadge(){
-  const now=new Date();
-  document.getElementById('current-month-badge').textContent=MONTHS[now.getMonth()]+' '+now.getFullYear();
-}
-
-// ===== BACKGROUND STARS =====
-function initStars(){
-  const canvas=document.getElementById('bg-canvas');
-  const ctx=canvas.getContext('2d');
-  let stars=[];
-  function resize(){canvas.width=window.innerWidth;canvas.height=window.innerHeight;stars=Array.from({length:120},()=>({x:Math.random()*canvas.width,y:Math.random()*canvas.height,r:Math.random()*1.2+0.2,a:Math.random(),speed:Math.random()*0.002+0.001}))}
-  function draw(){
-    ctx.clearRect(0,0,canvas.width,canvas.height);
-    stars.forEach(s=>{s.a+=s.speed;if(s.a>1)s.a=0;ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.fillStyle=`rgba(255,255,255,${s.a*0.7})`;ctx.fill()});
-    requestAnimationFrame(draw);
+// ══ URL MODE ══
+function checkMode(){
+  const p=new URLSearchParams(window.location.search);
+  const mode=p.get('mode');
+  if(mode==='survey'){
+    document.querySelectorAll('.page').forEach(el=>el.classList.remove('on'));
+    document.getElementById('pg-survey').classList.add('on');
+    initSurvey();
   }
-  window.addEventListener('resize',resize);resize();draw();
 }
 
-// ===== DEMO DATA =====
-function loadDemoData(){
-  if(employees.length>0)return;
-  const nomes=[['Ana Lima','Gerente','Vendas',8200],['Carlos Souza','Corretor','Vendas',5600],['Mariana Costa','Corretora','Atendimento',15300],['Pedro Alves','Analista','Suporte',920],['Juliana Reis','Corretora','Vendas',3100],['Rafael Mendes','Corretor','Suporte',480]];
-  nomes.forEach(([name,role,sector,xp])=>{
-    employees.push({id:Date.now().toString()+Math.random(),name,role,sector,xp,photo:null,createdAt:new Date().toISOString()});
-  });
+// ══ DEMO DATA ══
+function maybeDemo(){
+  if(emps.length>0)return;
+  const items=[['Ana Lima','Aninha','Gerente','Vendas',8200,''],['Carlos Souza','Carlão','Corretor','Vendas',5600,''],['Mariana Costa','Mari','Corretora','Atendimento',15300,''],['Pedro Alves','Pedro','Analista','Suporte',920,''],['Juliana Reis','Ju','Corretora','Vendas',3100,''],['Rafael Mendes','Rafa','Corretor','Suporte',480,'']];
+  items.forEach(([name,nick,role,sector,xp])=>{emps.push({id:Date.now().toString()+Math.random().toString(36).slice(2),name,nick,role,sector,xp,photo:null,createdAt:new Date().toISOString()})});
   save();
 }
 
-// ===== INIT =====
-load();
-initStars();
-setMonthBadge();
-loadDemoData();
-renderCards();
+// ══ INIT ══
+load();initStars();initMonth();maybeDemo();checkMode();renderCards();
 </script>
 </body>
 </html>
