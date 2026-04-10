@@ -1356,42 +1356,65 @@ function toggleTheme(){
 }
 
 // ══ PERSIST ══
-function save(){
+const API_URL = '/api'; // O Worker servirá a API no mesmo domínio
+
+async function save(){
+  // Mantém o salvamento local como backup
   try{
-    emps.forEach(e=>{
-      if(e.photo){try{localStorage.setItem('lc_ph_'+e.id,e.photo)}catch(err){}}
-      else{localStorage.removeItem('lc_ph_'+e.id)}
-      if(e.qrImg){try{localStorage.setItem('lc_qr_'+e.id,e.qrImg)}catch(err){}}
-      else{localStorage.removeItem('lc_qr_'+e.id)}
-    });
     const noMedia=emps.map(e=>({...e,photo:undefined,qrImg:undefined}));
     localStorage.setItem('lc_e',JSON.stringify(noMedia));
     localStorage.setItem('lc_l',JSON.stringify(logs));
     localStorage.setItem('lc_h',JSON.stringify(hall));
     localStorage.setItem('lc_s',JSON.stringify(svStats));
-  }catch(err){
-    try{
-      const trimmedLogs={};
-      Object.keys(logs).forEach(k=>{trimmedLogs[k]=(logs[k]||[]).slice(-20)});
-      const noMedia=emps.map(e=>({...e,photo:undefined,qrImg:undefined}));
-      localStorage.setItem('lc_e',JSON.stringify(noMedia));
-      localStorage.setItem('lc_l',JSON.stringify(trimmedLogs));
-      localStorage.setItem('lc_h',JSON.stringify(hall));
-      localStorage.setItem('lc_s',JSON.stringify(svStats));
-      toast('⚠ Espaço limitado — exporte seus dados!','warn');
-    }catch(e2){toast('❌ Erro ao salvar!','err')}
+  }catch(e){}
+
+  // Salva na nuvem via Worker
+  try {
+    const photos = {};
+    emps.forEach(e => { if(e.photo && e.photo.startsWith('data:')) photos[e.id] = e.photo; });
+    
+    const response = await fetch(`${API_URL}/save`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ emps, logs, hall, svStats, photos })
+    });
+    if(!response.ok) throw new Error('Falha ao sincronizar');
+    console.log('Dados sincronizados com a nuvem');
+  } catch(err) {
+    console.error('Erro na sincronização:', err);
+    toast('⚠ Erro ao sincronizar com a nuvem', 'warn');
   }
 }
-function load(){
-  try{const e=localStorage.getItem('lc_e');if(e){emps=JSON.parse(e);
-    emps.forEach(e=>{
-      const ph=localStorage.getItem('lc_ph_'+e.id);if(ph)e.photo=ph;
-      const qr=localStorage.getItem('lc_qr_'+e.id);if(qr)e.qrImg=qr;
-    });
-  }}catch(e){}
-  try{const l=localStorage.getItem('lc_l');if(l)logs=JSON.parse(l)}catch(e){}
-  try{const h=localStorage.getItem('lc_h');if(h)hall=JSON.parse(h)}catch(e){}
-  try{const s=localStorage.getItem('lc_s');if(s)svStats=JSON.parse(s)}catch(e){}
+
+async function load(){
+  // Tenta carregar da nuvem primeiro
+  try {
+    const response = await fetch(`${API_URL}/load`);
+    if(response.ok) {
+      const data = await response.json();
+      emps = data.emps || [];
+      logs = data.logs || {};
+      hall = data.hall || [];
+      svStats = data.svStats || {};
+      console.log('Dados carregados da nuvem');
+      render(); // Atualiza a interface
+      return;
+    }
+  } catch(err) {
+    console.error('Erro ao carregar da nuvem:', err);
+  }
+
+  // Fallback para localStorage se a nuvem falhar
+  try{
+    const e=localStorage.getItem('lc_e');
+    if(e) emps=JSON.parse(e);
+    const l=localStorage.getItem('lc_l');
+    if(l) logs=JSON.parse(l);
+    const h=localStorage.getItem('lc_h');
+    if(h) hall=JSON.parse(h);
+    const s=localStorage.getItem('lc_s');
+    if(s) svStats=JSON.parse(s);
+  }catch(e){}
 }
 
 // ══ HELPERS ══
@@ -2177,16 +2200,21 @@ function maybeDemo(){
 }
 
 // ══ INIT ══
-initTheme();
-load();
-initParticles();
-initMonth();
-maybeDemo();
-checkMode();
-renderCards();
+(async () => {
+  initTheme();
+  await load();
+  initParticles();
+  initMonth();
+  maybeDemo();
+  checkMode();
+  renderCards();
+  
+  // Auto-save a cada 10 minutos para garantir sincronia
+  setInterval(save, 600000);
+})();
 
 // Theme toggle binding
-document.getElementById('theme-toggle').addEventListener('click', toggleTheme);
+document.getElementById('theme-toggle')?.addEventListener('click', toggleTheme);
 </script>
 </body>
 </html>
