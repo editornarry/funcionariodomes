@@ -1359,7 +1359,10 @@ function toggleTheme(){
 const API_URL = 'https://funcionariodo-mes.editor-narrymonpsena.workers.dev/api'; // Substitua pelo endereço real do seu Worker se necessário
 
 async function save(){
-  // Salva localmente como backup (sem fotos para não pesar)
+  // Feedback visual de salvamento
+  toast('☁ Sincronizando com a nuvem...', 'info');
+
+  // Salva localmente como backup rápido (sem fotos)
   try{
     const noMedia=emps.map(e=>({...e,photo:undefined,qrImg:undefined}));
     localStorage.setItem('lc_e',JSON.stringify(noMedia));
@@ -1378,7 +1381,7 @@ async function save(){
       }
     });
     
-    // Remove as fotos do array principal de funcionários para o JSON não ficar gigante
+    // Remove as fotos do array principal para o JSON não ficar gigante
     const empsNoMedia = emps.map(e => ({...e, photo: undefined, qrImg: undefined}));
 
     const response = await fetch(`${API_URL}/save`, {
@@ -1388,10 +1391,12 @@ async function save(){
     });
     
     if(!response.ok) throw new Error('Falha ao sincronizar');
+    
     console.log('Dados e fotos sincronizados com a nuvem');
+    toast('✅ Sincronizado com sucesso!', 'ok');
   } catch(err) {
     console.error('Erro na sincronização:', err);
-    toast('⚠ Erro ao sincronizar com a nuvem', 'warn');
+    toast('❌ Erro ao sincronizar com a nuvem', 'err');
   }
 }
 
@@ -1401,12 +1406,20 @@ async function load(){
     const response = await fetch(`${API_URL}/load`);
     if(response.ok) {
       const data = await response.json();
+      
+      // Atualiza as variáveis globais com os dados da nuvem
       emps = data.emps || [];
       logs = data.logs || {};
       hall = data.hall || [];
       svStats = data.svStats || {};
-      console.log('Dados carregados da nuvem');
-      render(); // Atualiza a interface
+      
+      console.log('Dados e fotos carregados da nuvem');
+      
+      // Força o re-render dos cards para mostrar as fotos novas
+      if (typeof renderCards === 'function') renderCards();
+      if (typeof renderStats === 'function') renderStats();
+      if (typeof renderHall === 'function') renderHall();
+      
       return;
     }
   } catch(err) {
